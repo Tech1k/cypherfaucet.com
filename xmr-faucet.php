@@ -637,7 +637,7 @@ $height_display = "<span style=\"color: {$dot};\">&#9679;</span> " . $height_dis
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="theme-color" content="#c5c5c5">
         <link rel="canonical" href="<?php echo $canonical; ?>" />
-        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=6">
+        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=8">
         <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
         <style>

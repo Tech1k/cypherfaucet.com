@@ -9,7 +9,7 @@
   }
   
   a:visited {
-      color: darkcyan;
+      color: #7a9cc4;
   }
   
   #main {
@@ -77,7 +77,7 @@
   }
   
   #curpage {
-      color: rgb(50, 200, 200) !important;
+      color: #4d9fe0 !important;
       text-decoration: underline;
   }
   
@@ -234,8 +234,8 @@
   }
   
   .formbtn {
-      background-color: #0fa499;
-      border: 1px solid #0fa499;
+      background-color: #0f5ea4;
+      border: 1px solid #0f5ea4;
       color: #ffffff;
       width: 100%;
       padding: 0.85em 1em;
@@ -247,6 +247,6 @@
   }
 
   .formbtn:hover {
-      background-color: #0c8a81;
-      border-color: #0c8a81;
+      background-color: #0c4f8a;
+      border-color: #0c4f8a;
   }
