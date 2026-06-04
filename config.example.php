@@ -14,4 +14,13 @@ return [
 
     // Public link to your source, shown in the footer to satisfy AGPL section 13.
     'source_url' => 'https://github.com/youruser/cypherfaucet',
+
+    // Per-net "return unused coins" addresses, shown in the donate card and the
+    // out-of-coins message. Leave blank to hide the card.
+    'donate_stagenet' => '',
+    'donate_testnet'  => '',
+
+    // Optional: a mainnet XMR address enables a low-key "support the faucet"
+    // entry in the FAQ. Leave blank to keep donations off.
+    'mainnet_donate' => '',
 ];

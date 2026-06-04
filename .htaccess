@@ -19,7 +19,7 @@ ErrorDocument 404 /404.php
 # balance/height caches), the database directory, and the repo metadata files.
 RewriteRule (^|/)\.(?!well-known/) - [L,R=404]
 RewriteRule ^(db|tools)/ - [L,R=404]
-RewriteRule ^(config\.php|config\.example\.php|LICENSE|README\.md)$ - [L,R=404]
+RewriteRule ^(config\.php|config\.example\.php|LICENSE|README\.md|SECURITY\.md)$ - [L,R=404]
 
 # Litecoin testnet faucet retired (May 2026). Send old/listed links home.
 RewriteRule ^ltc-testnet(\.php)?/?$ / [R=301,L]

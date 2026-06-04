@@ -23,7 +23,6 @@ $FAUCETS = [
         'explorer_tx'    => '', // stagenet.xmrchain.com unreliable; show txid + payment proof. Re-enable: 'https://stagenet.xmrchain.com/tx/'
         'address_hint'   => 'starts with 5 or 7',
         'canonical'      => '/xmr-stagenet',
-        'donate_address' => '79XvvHBab3xi2J57cR9Qcp2yE1TvQyTLdCUh6Vv7cY9HK31fmvqqv8mKt86J6NrfNn5QFntj8sCxjeYcms77TqPT1XfRsfx',
         // Set 'explorer_tx' => '' to show the bare txid (no link) when the
         // dev-net explorers are down.
         // Optional: 'daemon_url' => 'http://127.0.0.1:38081/json_rpc', 'expected_host' => 'cypherfaucet.com',
@@ -37,7 +36,6 @@ $FAUCETS = [
         'explorer_tx'    => '', // testnet.xmrchain.com unreliable; show txid + payment proof. Re-enable: 'https://testnet.xmrchain.com/tx/'
         'address_hint'   => 'starts with 9, A, or B',
         'canonical'      => '/xmr-testnet',
-        'donate_address' => 'Bdap8k5qSW1NwMXKmoivyRdb7JU8vwqHfhXt33pPEx2WRo21CzpvL7VWxFsuwnPPcQULZPDB8B7nQ3KkGB5vYfPaQRvB4QX',
     ],
 ];
 
@@ -60,8 +58,6 @@ $nettype      = $faucet['nettype'];           // "stagenet" / "testnet"
 $explorer_tx  = $faucet['explorer_tx'] ?? ''; // "https://.../tx/", or '' to show the bare txid
 $address_hint = $faucet['address_hint'];      // placeholder hint
 $canonical    = $faucet['canonical'];         // "/xmr-stagenet"
-$donate_addr  = $faucet['donate_address'];
-$donate_safe  = htmlspecialchars($donate_addr, ENT_QUOTES, 'UTF-8'); // for display; keep $donate_addr raw for comparisons
 $expected_host = $faucet['expected_host'] ?? null; // optional captcha host pin
 
 // Daemon JSON-RPC, used only for the sync-status line. Defaults to the
@@ -83,6 +79,17 @@ define('TURNSTILE_SITEKEY', $config['turnstile_sitekey'] ?? '');
 
 // Public link to the source, shown in the footer to satisfy AGPL section 13.
 $source_url = $config['source_url'] ?? 'https://github.com/Tech1k/cypherfaucet';
+
+// Optional mainnet XMR address for the "support the faucet" FAQ entry. Empty by
+// default, so the public code doesn't ask for donations; set it in config.php
+// on your own deployment to enable the entry.
+$mainnet_donate = $config['mainnet_donate'] ?? '';
+
+// Per-net "return unused coins" address, from config (donate_stagenet /
+// donate_testnet). Empty when unset, so the public code ships no addresses; the
+// donate card and out-of-coins prompt hide gracefully until you set these.
+$donate_addr = $config["donate_{$nettype}"] ?? '';
+$donate_safe = htmlspecialchars($donate_addr, ENT_QUOTES, 'UTF-8'); // display; keep $donate_addr raw for comparisons
 
 // Wallet RPC. Credentials come from config (or leave blank if the wallet runs
 // with --disable-rpc-login bound to localhost).
@@ -315,8 +322,11 @@ if ($bal === null) {
     if ($unlocked < $min_unlocked) {
         $display_form = "display: none;";
         if ($balance < $min_unlocked) {
-            $active_err = card('', '', 'Error - Out of Coins',
-                "<p>The faucet is running low on coins. Please consider returning some {$currency} to <strong>{$donate_safe}</strong> to keep the faucet running!</p>");
+            $out_msg = "The faucet is running low on coins. Please check back later!";
+            if ($donate_addr !== '') {
+                $out_msg = "The faucet is running low on coins. Please consider returning some {$currency} to <strong>{$donate_safe}</strong> to keep the faucet running!";
+            }
+            $active_err = card('', '', 'Error - Out of Coins', "<p>{$out_msg}</p>");
         } else {
             $active_err = card('', '', 'Coins Locking',
                 "<p>The faucet's coins are briefly locked after recent payouts (Monero locks outputs for about 20 minutes). Please try again in a few minutes.</p>");
@@ -705,6 +715,7 @@ $height_display = "<span style=\"color: {$dot};\">&#9679;</span> " . $height_dis
                 </form>
             </div>
 
+<?php if ($donate_addr !== '') { ?>
             <div class="card">
                 <div class="card-header"><b>Please return your unused <?php echo $currency; ?> so others can use them!</b></div>
                 <div class="card-body">
@@ -712,6 +723,7 @@ $height_display = "<span style=\"color: {$dot};\">&#9679;</span> " . $height_dis
                     <span><?php echo $currency; ?> sent to this address are forwarded to the faucet periodically.</span>
                 </div>
             </div>
+<?php } ?>
 
             <div class="card">
                 <div class="card-header">FAQs</div>
@@ -726,6 +738,11 @@ $height_display = "<span style=\"color: {$dot};\">&#9679;</span> " . $height_dis
                     <p>This can happen for many reasons. Usually, the captcha could fail if you're using a VPN or ad blocker, unsupported or out-of-date browser.</p>
                     <h3>What's the catch?</h3>
                     <p>There is no catch! I created this and my other faucets to give back to the community.</p>
+<?php if ($mainnet_donate !== '') { $mainnet_safe = htmlspecialchars($mainnet_donate, ENT_QUOTES, 'UTF-8'); ?>
+                    <h3>Can I support the faucet?</h3>
+                    <p>This faucet is free and I run it to give back. If it has saved you time and you would like to help with server costs, <b>mainnet</b> XMR donations are welcome and entirely optional:</p>
+                    <p><code class="mono"><?php echo $mainnet_safe; ?></code> <button type="button" class="copybtn" data-copy="<?php echo $mainnet_safe; ?>">Copy</button></p>
+<?php } ?>
                 </div>
             </div>
             <br/>
