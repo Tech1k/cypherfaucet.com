@@ -176,7 +176,8 @@ If you run your own instance, change the operator-specific bits (they're
 hardcoded, not in config): the domain in the `canonical` / `og:` / `twitter:`
 meta and in `sitemap.xml` / `robots.txt`, the footer attribution, the operator
 and contact details in `legal.php`, and the PGP identity in `contact.php`,
-`SECURITY.md`, and `tech1k.txt`. Secrets, RPC creds, and donation addresses are
-already in `config.php`.
+`SECURITY.md`, and `tech1k.txt`. Secrets, RPC creds, and donation details
+(address, OpenAlias, QR path) live in `config.php`; if you enable donations, add
+your own QR image (the operator one is gitignored).
 
 Issues and pull requests are welcome.

@@ -21,6 +21,9 @@ return [
     'donate_testnet'  => '',
 
     // Optional: a mainnet XMR address enables a low-key "support the faucet"
-    // entry in the FAQ. Leave blank to keep donations off.
-    'mainnet_donate' => '',
+    // entry in the FAQ. Leave blank to keep donations off. The two extras below
+    // are shown only when mainnet_donate is also set.
+    'mainnet_donate'    => '',
+    'mainnet_openalias' => '', // e.g. 'donate@cypherfaucet.com' (enable DNSSEC for the verified check)
+    'mainnet_qr'        => '', // e.g. '/assets/images/monero-qr.png' (your own QR; gitignored)
 ];

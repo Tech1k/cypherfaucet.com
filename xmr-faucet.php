@@ -84,6 +84,8 @@ $source_url = $config['source_url'] ?? 'https://github.com/Tech1k/cypherfaucet';
 // default, so the public code doesn't ask for donations; set it in config.php
 // on your own deployment to enable the entry.
 $mainnet_donate = $config['mainnet_donate'] ?? '';
+$mainnet_openalias = $config['mainnet_openalias'] ?? ''; // optional OpenAlias handle (e.g. donate@example.com)
+$mainnet_qr = $config['mainnet_qr'] ?? '';               // optional path to a donation QR image
 
 // Per-net "return unused coins" address, from config (donate_stagenet /
 // donate_testnet). Empty when unset, so the public code ships no addresses; the
@@ -761,10 +763,20 @@ $height_display = "<span style=\"color: {$dot};\">&#9679;</span> " . $height_dis
                     <p>This can happen for many reasons. Usually, the captcha could fail if you're using a VPN or ad blocker, unsupported or out-of-date browser.</p>
                     <h3>What's the catch?</h3>
                     <p>There is no catch! I created this and my other faucets to give back to the community.</p>
-<?php if ($mainnet_donate !== '') { $mainnet_safe = htmlspecialchars($mainnet_donate, ENT_QUOTES, 'UTF-8'); ?>
+<?php if ($mainnet_donate !== '') {
+    $mainnet_safe   = htmlspecialchars($mainnet_donate, ENT_QUOTES, 'UTF-8');
+    $openalias_safe = htmlspecialchars($mainnet_openalias, ENT_QUOTES, 'UTF-8');
+    $qr_safe        = htmlspecialchars($mainnet_qr, ENT_QUOTES, 'UTF-8');
+?>
                     <h3>Can I support the faucet?</h3>
                     <p>This faucet is free and I run it to give back. If it has saved you time and you would like to help with server costs, <b>mainnet</b> XMR donations are welcome and entirely optional:</p>
+<?php if ($mainnet_openalias !== '') { ?>
+                    <p>OpenAlias: <code class="mono"><?php echo $openalias_safe; ?></code> <button type="button" class="copybtn" data-copy="<?php echo $openalias_safe; ?>">Copy</button></p>
+<?php } ?>
                     <p><code class="mono"><?php echo $mainnet_safe; ?></code> <button type="button" class="copybtn" data-copy="<?php echo $mainnet_safe; ?>">Copy</button></p>
+<?php if ($mainnet_qr !== '') { ?>
+                    <p><img src="<?php echo $qr_safe; ?>" alt="Monero donation QR code" style="width: 180px; max-width: 100%; height: auto; margin-top: 8px;"></p>
+<?php } ?>
 <?php } ?>
                 </div>
             </div>
