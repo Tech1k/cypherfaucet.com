@@ -83,9 +83,11 @@ $source_url = $config['source_url'] ?? 'https://github.com/Tech1k/cypherfaucet';
 // Optional mainnet XMR address for the "support the faucet" FAQ entry. Empty by
 // default, so the public code doesn't ask for donations; set it in config.php
 // on your own deployment to enable the entry.
-$mainnet_donate = $config['mainnet_donate'] ?? '';
-$mainnet_openalias = $config['mainnet_openalias'] ?? ''; // optional OpenAlias handle (e.g. donate@example.com)
-$mainnet_qr = $config['mainnet_qr'] ?? '';               // optional path to a donation QR image
+// New keys are mainnet_xmr* (with the legacy mainnet_donate/qr read as a
+// fallback). OpenAlias is shared across all coins, so it stays mainnet_openalias.
+$mainnet_donate = $config['mainnet_xmr'] ?? $config['mainnet_donate'] ?? '';
+$mainnet_openalias = $config['mainnet_openalias'] ?? ''; // shared OpenAlias handle, resolves per coin (e.g. donate@example.com)
+$mainnet_qr = $config['mainnet_xmr_qr'] ?? $config['mainnet_qr'] ?? '';                       // optional path to a donation QR image
 
 // Per-net "return unused coins" address, from config (donate_stagenet /
 // donate_testnet). Empty when unset, so the public code ships no addresses; the

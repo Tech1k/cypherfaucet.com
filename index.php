@@ -68,7 +68,7 @@ $faucets = [
                 <br/>
                 <span style="font-size: 48px;"><strong>CypherFaucet</strong></span>
                 <br/>
-                <span style="font-size: 32px;">Monero, Litecoin, and Bitcoin testnet faucets.</span>
+                <span style="font-size: 32px;">Free testnet coins for developers.</span>
             </p>
 
             <div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">

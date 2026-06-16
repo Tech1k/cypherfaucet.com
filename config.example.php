@@ -41,19 +41,30 @@ return [
     ],
 
     // Public link to your source, shown in the footer to satisfy AGPL section 13.
-    'source_url' => 'https://github.com/youruser/cypherfaucet',
+    'source_url' => 'https://github.com/Tech1k/cypherfaucet',
 
-    // Per-net "return unused coins" addresses, shown in the donate card and the
-    // out-of-coins message. Leave blank to hide the card.
+    // Testnet "return unused coins" addresses, shown in the recycle card and the
+    // out-of-coins message. Leave blank to hide the card. The t-prefix (tltc /
+    // tbtc) marks these as testnet, to keep them distinct from the mainnet
+    // donation addresses below.
     'donate_stagenet' => '',
     'donate_testnet'  => '',
-    'donate_ltc'      => '',
-    'donate_btc'      => '',
+    'donate_tltc'     => '',
+    'donate_tbtc'     => '',
 
-    // Optional: a mainnet XMR address enables a low-key "support the faucet"
-    // entry in the FAQ. Leave blank to keep donations off. The two extras below
-    // are shown only when mainnet_donate is also set.
-    'mainnet_donate'    => '',
-    'mainnet_openalias' => '', // e.g. 'donate@cypherfaucet.com' (enable DNSSEC for the verified check)
-    'mainnet_qr'        => '', // e.g. '/assets/images/monero-qr.png' (your own QR; gitignored)
+    // Optional mainnet "support the faucet" donation addresses, shown as a
+    // low-key FAQ entry on each faucet. All blank by default, so the public code
+    // asks for nothing; set a coin's address to enable just that coin's entry.
+    // Each coin also takes an optional QR image path (your own).
+    'mainnet_xmr'    => '',
+    'mainnet_xmr_qr' => '', // e.g. '/assets/images/monero-qr.png'
+    'mainnet_ltc'    => '',
+    'mainnet_ltc_qr' => '',
+    'mainnet_btc'    => '',
+    'mainnet_btc_qr' => '',
+
+    // OpenAlias handle, shared across coins: a single FQDN resolves to the right
+    // address per coin via its DNS TXT records (enable DNSSEC for the verified
+    // check). Shown on every faucet whose mainnet address is set above.
+    'mainnet_openalias' => '', // e.g. 'donate@cypherfaucet.com'
 ];

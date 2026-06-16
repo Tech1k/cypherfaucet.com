@@ -73,9 +73,18 @@ define('TURNSTILE_SITEKEY', $config['turnstile_sitekey'] ?? '');
 $source_url    = $config['source_url'] ?? 'https://github.com/Tech1k/cypherfaucet';
 $expected_host = $config['expected_host'] ?? null; // optional captcha host pin
 
-// Per-coin "return unused coins" address, from config (donate_ltc / donate_btc).
-$donate_addr = $config["donate_{$coin}"] ?? '';
+// Per-coin "return unused testnet coins" address (donate_tltc / donate_tbtc),
+// falling back to the legacy donate_ltc / donate_btc keys if still in config.
+$donate_addr = $config['donate_' . strtolower($currency)] ?? $config["donate_{$coin}"] ?? '';
 $donate_safe = htmlspecialchars($donate_addr, ENT_QUOTES, 'UTF-8'); // display; keep raw for comparison
+
+// Optional mainnet "support the faucet" address for this coin (mainnet_ltc /
+// mainnet_btc) plus an optional QR, and a shared OpenAlias handle that resolves
+// per coin. Empty by default so the public code asks for nothing; set in
+// config.php to show a low-key FAQ entry.
+$mainnet_addr      = $config["mainnet_{$coin}"] ?? '';
+$mainnet_qr        = $config["mainnet_{$coin}_qr"] ?? '';
+$mainnet_openalias = $config['mainnet_openalias'] ?? '';
 
 // Bitcoin Core JSON-RPC. Creds from config (e.g. ltc_rpc_user / ltc_rpc_pass);
 // bind the daemon to 127.0.0.1. If the daemon has more than one wallet loaded
@@ -615,6 +624,22 @@ $height_display = "<span style=\"color: {$dot};\">&#9679;</span> " . $height_dis
                     <p>This can happen for many reasons. Usually, the captcha could fail if you're using a VPN or ad blocker, unsupported or out-of-date browser.</p>
                     <h3>What's the catch?</h3>
                     <p>There is no catch! I created this and my other faucets to give back to the community.</p>
+<?php if ($mainnet_addr !== '') {
+    $mainnet_safe    = htmlspecialchars($mainnet_addr, ENT_QUOTES, 'UTF-8');
+    $mainnet_qr_safe = htmlspecialchars($mainnet_qr, ENT_QUOTES, 'UTF-8');
+    $openalias_safe  = htmlspecialchars($mainnet_openalias, ENT_QUOTES, 'UTF-8');
+    $mainnet_ticker  = substr($currency, 1); // tLTC -> LTC, tBTC -> BTC
+?>
+                    <h3>Can I support the faucet?</h3>
+                    <p>This faucet is free and I run it to give back. If it has saved you time and you would like to help with server costs, <b>mainnet</b> <?php echo $mainnet_ticker; ?> donations are welcome and entirely optional:</p>
+<?php if ($mainnet_openalias !== '') { ?>
+                    <p>OpenAlias: <code class="mono"><?php echo $openalias_safe; ?></code> <button type="button" class="copybtn" data-copy="<?php echo $openalias_safe; ?>">Copy</button></p>
+<?php } ?>
+                    <p><code class="mono"><?php echo $mainnet_safe; ?></code> <button type="button" class="copybtn" data-copy="<?php echo $mainnet_safe; ?>">Copy</button></p>
+<?php if ($mainnet_qr !== '') { ?>
+                    <p><img src="<?php echo $mainnet_qr_safe; ?>" alt="<?php echo $mainnet_ticker; ?> donation QR code" style="width: 180px; max-width: 100%; height: auto; margin-top: 8px;"></p>
+<?php } ?>
+<?php } ?>
                 </div>
             </div>
             <br/>
