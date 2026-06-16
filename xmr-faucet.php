@@ -38,7 +38,6 @@ $nettype      = $faucet['nettype'];           // "stagenet" / "testnet"
 $explorer_tx  = $faucet['explorer_tx'] ?? ''; // "https://.../tx/", or '' to show the bare txid
 $address_hint = $faucet['address_hint'];      // placeholder hint
 $canonical    = $faucet['href'];              // "/xmr-stagenet"
-$expected_host = $faucet['expected_host'] ?? null; // optional captcha host pin
 
 // Daemon JSON-RPC, used only for the sync-status line. Defaults to the
 // standard monerod port convention (wallet RPC port minus 7: 38088->38081,
@@ -59,6 +58,10 @@ define('TURNSTILE_SITEKEY', $config['turnstile_sitekey'] ?? '');
 
 // Public link to the source, shown in the footer to satisfy AGPL section 13.
 $source_url = $config['source_url'] ?? 'https://github.com/Tech1k/cypherfaucet';
+
+// Optional captcha host pin, same config.php key as core-faucet.php. Skipped
+// over Tor at the call site so it can't reject onion-solved Turnstile tokens.
+$expected_host = $config['expected_host'] ?? null;
 
 // Optional mainnet XMR address for the "support the faucet" FAQ entry. Empty by
 // default, so the public code doesn't ask for donations; set it in config.php
@@ -294,6 +297,11 @@ $error_msg = card('alert', ' alertborder', 'Faucet Error',
     "<p>There seems to be an error with the faucet. Please <a href='/contact'>contact me</a> if this error persists, sorry for the inconvenience.</p>");
 
 $ip = resolve_client_ip();
+// A real per-visitor IP only exists when the request came through Cloudflare.
+// Tor (and any direct-to-origin) requests arrive from the local daemon with a
+// shared address (127.0.0.1), so there's no usable IP to rate-limit on; for
+// those, fall back to limiting by payout address alone.
+$ip_trusted = !empty($_SERVER['HTTP_CF_CONNECTING_IP']);
 
 // ---- Balance ------------------------------------------------------------
 $bal = get_wallet_balance($rpcUrl, $rpcUser, $rpcPass, $nettype, dirname($dbFile));
@@ -329,7 +337,7 @@ if ($bal === null) {
     } elseif ($_SERVER["REQUEST_METHOD"] === "POST") {
         // ---- Captcha ----------------------------------------------------
         $captcha = $_POST['cf-turnstile-response'] ?? '';
-        if (empty(trim($captcha)) || !verify_captcha($captcha, $ip, $expected_host)) {
+        if (empty(trim($captcha)) || !verify_captcha($captcha, $ip, $ip_trusted ? $expected_host : null)) {
             $active_err = card('alert', ' alertborder', 'Captcha Error',
                 "<p>You must complete the captcha, this is so that we can reduce bot and spam attacks on our faucet.</p>");
         } else {
@@ -379,13 +387,18 @@ if ($bal === null) {
                     try {
                         $db->exec('BEGIN IMMEDIATE');
 
+                        $ipClause = $ip_trusted ? ' OR ip_address = :ip' : '';
                         $check = $db->prepare(
                             "SELECT timestamp FROM {$table}
-                             WHERE (payout_address = :addr OR ip_address = :ip)
+                             WHERE (payout_address = :addr{$ipClause})
                                AND timestamp >= DATETIME('now', '-1 hour')
                              ORDER BY timestamp DESC LIMIT 1"
                         );
-                        $check->execute([':addr' => $xmr_address, ':ip' => $ip]);
+                        $checkParams = [':addr' => $xmr_address];
+                        if ($ip_trusted) {
+                            $checkParams[':ip'] = $ip;
+                        }
+                        $check->execute($checkParams);
                         $recent = $check->fetch(PDO::FETCH_ASSOC);
 
                         if ($recent) {
@@ -758,10 +771,7 @@ $height_display = "<span style=\"color: {$dot};\">&#9679;</span> " . $height_dis
                 </div>
             </div>
             <br/>
-            <footer>
-                <hr style="width: 17.5%;"/>
-                <p style="text-align: center; font-size: 18px;">Established May 5, 2025.<br/>Made with ♥️ and ☕ by <a href="https://tech1k.com" target="_blank" rel="noopener"><strong>Tech1k</strong></a> &middot; <a href="<?php echo htmlspecialchars($source_url, ENT_QUOTES, 'UTF-8'); ?>" target="_blank" rel="noopener">Source</a></p>
-            </footer>
+<?php include __DIR__ . '/footer.php'; ?>
         </div>
         <script>
             // Copy-to-clipboard for [data-copy] buttons (txid, check_tx_key

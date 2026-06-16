@@ -190,6 +190,47 @@ stubbed in its `$COINS` map. To enable a coin:
   to Cloudflare's IP ranges (https://www.cloudflare.com/ips) and/or enable
   Authenticated Origin Pulls. Otherwise a direct-to-origin request can forge it.
 
+## Tor / onion service (optional)
+
+Serving the faucet as a Tor onion service suits the privacy-minded audience, but
+a few things differ from clearnet:
+
+- **torrc** (Tor on the same box):
+
+  ```
+  HiddenServiceDir /var/lib/tor/cypherfaucet/
+  HiddenServicePort 80 127.0.0.1:80
+  ```
+
+- **Strip `CF-Connecting-IP` on the onion vhost.** Onion requests reach the
+  origin directly (not through Cloudflare), so an onion client could inject a
+  forged `CF-Connecting-IP` and grief clearnet IP rate limits. On the vhost that
+  serves the onion, unset the inbound header:
+
+  ```
+  RequestHeader unset CF-Connecting-IP
+  RequestHeader unset X-Forwarded-For
+  ```
+
+  With no `CF-Connecting-IP`, the engine treats the request as Tor and limits by
+  payout address only (IP limiting is meaningless when every visitor shares the
+  local daemon's `127.0.0.1`).
+- **Advertise it on clearnet** with the `Onion-Location` header (commented
+  template in `.htaccess`, ideally on your clearnet vhost). Verify with
+  `curl -I https://yoursite/` that it actually reaches the client; Cloudflare can
+  strip unknown response headers.
+- **Captcha.** Cloudflare Turnstile is a third-party JS + `siteverify` dependency:
+  the origin needs outbound HTTPS to `challenges.cloudflare.com`, the `.onion`
+  host must be allow-listed on the Turnstile widget, and `expected_host` (if set)
+  is skipped automatically over Tor. Turnstile works in Tor Browser on the
+  default (Standard) security level; the Safer/Safest levels disable JS and can't
+  complete it (no JS captcha can). If Cloudflare ever starts blocking your exit
+  nodes, a self-hosted proof-of-work captcha is the fallback.
+- **Abuse tradeoff.** Because IP limiting can't work over Tor, the only gates are
+  the captcha and the per-address window, and addresses are free to generate.
+  That's fine for testnet coins (no value); **do not enable Tor on a fork holding
+  mainnet funds** without adding a real per-identity limit.
+
 ## License
 
 Copyright (C) 2025-2026 Tech1k

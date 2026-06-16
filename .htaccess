@@ -9,6 +9,14 @@ Options -Indexes
     Header always set X-Frame-Options "DENY"
     Header always set Referrer-Policy "no-referrer"
     Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+
+    # Advertise a Tor onion service to clearnet visitors so Tor Browser shows a
+    # ".onion available" button. Deployment-specific: uncomment and set your own
+    # onion address (better yet, put this on your clearnet vhost so the onion
+    # stays out of a public repo). Uses ap_expr for the path (recent Apache 2.4);
+    # after enabling, confirm with `curl -I` that it survives to the client, since
+    # Cloudflare can strip unknown response headers. See README "Tor / onion".
+    # Header always set Onion-Location "expr=http://YOURADDRESS.onion%{REQUEST_URI}"
 </IfModule>
 
 # Custom error pages.

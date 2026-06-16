@@ -57,10 +57,7 @@ $source_url = $cfg['source_url'] ?? 'https://github.com/Tech1k/cypherfaucet';
                 <br/>
             </div>
             <br/><br/><br/><br/><br/>
-            <footer>
-                <hr/>
-                <p style="text-align: center; font-size: 18px;">Established May 5, 2025.<br/>Made with ♥️ and ☕ by <a href="https://tech1k.com" target="_blank" rel="noopener"><strong>Tech1k</strong></a> &middot; <a href="<?php echo htmlspecialchars($source_url, ENT_QUOTES, 'UTF-8'); ?>" target="_blank" rel="noopener">Source</a></p>
-            </footer>
+<?php include __DIR__ . '/footer.php'; ?>
         </div>
 	</body>
 </html>

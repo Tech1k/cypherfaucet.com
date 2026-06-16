@@ -43,6 +43,10 @@ return [
     // Public link to your source, shown in the footer to satisfy AGPL section 13.
     'source_url' => 'https://github.com/Tech1k/cypherfaucet',
 
+    // Optional Tor onion address (no scheme). When set, a "Tor" link shows in the
+    // footer. Pair it with the Onion-Location header (see README "Tor / onion").
+    'onion' => '', // e.g. 'abcd...xyz.onion'
+
     // Testnet "return unused coins" addresses, shown in the recycle card and the
     // out-of-coins message. Leave blank to hide the card. The t-prefix (tltc /
     // tbtc) marks these as testnet, to keep them distinct from the mainnet
