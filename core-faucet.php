@@ -19,23 +19,23 @@ $COINS = [
         'currency'      => 'tLTC',
         'table'         => 'tltc_payouts',
         'rpc_port'      => 19332,
-        'payout_amount' => 0.1,
-        'claim_hours'   => 12,
+        'payout_amount' => 0.01,
+        'claim_hours'   => 1,
         'address_hint'  => 'starts with m, n, Q, tltc1, or tmweb1',
         'canonical'     => '/ltc-testnet',
         'explorer_tx'   => 'https://litecoinspace.org/testnet/tx/', // '' shows a bare txid
         'icon'          => '/assets/images/litecoin.png',
     ],
     'btc' => [
-        'net_label'     => 'Bitcoin Testnet',
+        'net_label'     => 'Bitcoin Testnet4',
         'currency'      => 'tBTC',
         'table'         => 'tbtc_payouts',
-        'rpc_port'      => 18332,
-        'payout_amount' => 0.0001,
-        'claim_hours'   => 12,
+        'rpc_port'      => 48332, // testnet4 default (testnet3 is 18332)
+        'payout_amount' => 0.01,
+        'claim_hours'   => 1,
         'address_hint'  => 'starts with m, n, 2, or tb1',
         'canonical'     => '/btc-testnet',
-        'explorer_tx'   => 'https://mempool.space/testnet/tx/', // '' shows a bare txid
+        'explorer_tx'   => 'https://mempool.space/testnet4/tx/', // '' shows a bare txid
         'icon'          => '/assets/images/bitcoin.png',
     ],
 ];

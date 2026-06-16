@@ -11,7 +11,7 @@ $faucets = [
     ['key' => 'stagenet', 'label' => 'Monero Stagenet Faucet', 'blurb' => 'Get 0.01 sXMR every hour',      'href' => '/xmr-stagenet', 'icon' => '/assets/images/monero.png',   'alt' => 'Monero'],
     ['key' => 'testnet',  'label' => 'Monero Testnet Faucet',  'blurb' => 'Get 0.01 tXMR every hour',      'href' => '/xmr-testnet',  'icon' => '/assets/images/monero.png',   'alt' => 'Monero'],
     ['key' => 'ltc',      'label' => 'Litecoin Testnet Faucet', 'blurb' => 'Get 0.1 tLTC every 12 hours',   'href' => '/ltc-testnet',  'icon' => '/assets/images/litecoin.png', 'alt' => 'Litecoin'],
-    ['key' => 'btc',      'label' => 'Bitcoin Testnet Faucet',  'blurb' => 'Get 0.0001 tBTC every 12 hours', 'href' => '/btc-testnet', 'icon' => '/assets/images/bitcoin.png',  'alt' => 'Bitcoin'],
+    ['key' => 'btc',      'label' => 'Bitcoin Testnet4 Faucet', 'blurb' => 'Get 0.0001 tBTC every 12 hours', 'href' => '/btc-testnet', 'icon' => '/assets/images/bitcoin.png',  'alt' => 'Bitcoin'],
 ];
 ?>
 <!-- SPDX-License-Identifier: AGPL-3.0-or-later  |  Copyright (C) 2025-2026 Tech1k -->
