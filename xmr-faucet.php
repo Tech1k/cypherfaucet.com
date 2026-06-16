@@ -5,50 +5,30 @@
 /**
  * Single entry point for the Monero Stagenet/Testnet faucets.
  *
- * Both nets are defined in the $FAUCETS map below; the active one is chosen by
- * the ?net= parameter that .htaccess sets when rewriting the pretty URLs
- * (/xmr-stagenet -> ?net=stagenet, /xmr-testnet -> ?net=testnet). Keeping both
- * configs here means the two nets can't drift apart, which is what once let
- * the testnet page check its rate limit against the stagenet table.
+ * The nets are defined in faucets.php (the shared faucet catalog); the active
+ * one is chosen by the ?net= parameter that .htaccess sets when rewriting the
+ * pretty URLs (/xmr-stagenet -> ?net=stagenet, /xmr-testnet -> ?net=testnet).
+ * This engine serves only the catalog entries tagged 'engine' => 'xmr', so the
+ * two nets can't drift apart or cross rate-limit tables.
  */
 
-// ---- Faucet definitions (both nets, one place) --------------------------
-$FAUCETS = [
-    'stagenet' => [
-        'net_label'      => 'Stagenet',
-        'currency'       => 'sXMR',
-        'nettype'        => 'stagenet',
-        'rpc_port'       => 38088,
-        'table'          => 'xmr_stagenet_payouts',
-        'explorer_tx'    => '', // stagenet.xmrchain.com unreliable; show txid + payment proof. Re-enable: 'https://stagenet.xmrchain.com/tx/'
-        'address_hint'   => 'starts with 5 or 7',
-        'canonical'      => '/xmr-stagenet',
-        // Set 'explorer_tx' => '' to show the bare txid (no link) when the
-        // dev-net explorers are down.
-        // Optional: 'daemon_url' => 'http://127.0.0.1:38081/json_rpc', 'expected_host' => 'cypherfaucet.com',
-    ],
-    'testnet' => [
-        'net_label'      => 'Testnet',
-        'currency'       => 'tXMR',
-        'nettype'        => 'testnet',
-        'rpc_port'       => 28088,
-        'table'          => 'xmr_testnet_payouts',
-        'explorer_tx'    => '', // testnet.xmrchain.com unreliable; show txid + payment proof. Re-enable: 'https://testnet.xmrchain.com/tx/'
-        'address_hint'   => 'starts with 9, A, or B',
-        'canonical'      => '/xmr-testnet',
-    ],
-];
+// ---- Faucet catalog -----------------------------------------------------
+// Every faucet's full definition lives in faucets.php (shared with the Bitcoin
+// Core engine and the homepage). This engine serves only the 'xmr' entries
+// (Monero wallet RPC); anything else 404s.
+$catalog = require __DIR__ . '/faucets.php';
 
-// Which net? Set by the .htaccess rewrite; reject anything not in the map.
+// Which net? Set by the .htaccess rewrite; reject anything this engine
+// doesn't serve.
 $net = $_GET['net'] ?? '';
-if (!isset($FAUCETS[$net])) {
+if (!isset($catalog[$net]) || ($catalog[$net]['engine'] ?? '') !== 'xmr') {
     http_response_code(404);
     exit;
 }
-$faucet = $FAUCETS[$net];
+$faucet = $catalog[$net];
 
 // ---- Config -------------------------------------------------------------
-$xmr_payout_amount = 0.01;
+$xmr_payout_amount = $faucet['payout_amount'];
 
 $net_label    = $faucet['net_label'];         // "Stagenet" / "Testnet"
 $currency     = $faucet['currency'];          // "sXMR" / "tXMR"
@@ -57,7 +37,7 @@ $table        = $faucet['table'];             // "xmr_stagenet_payouts" / ...
 $nettype      = $faucet['nettype'];           // "stagenet" / "testnet"
 $explorer_tx  = $faucet['explorer_tx'] ?? ''; // "https://.../tx/", or '' to show the bare txid
 $address_hint = $faucet['address_hint'];      // placeholder hint
-$canonical    = $faucet['canonical'];         // "/xmr-stagenet"
+$canonical    = $faucet['href'];              // "/xmr-stagenet"
 $expected_host = $faucet['expected_host'] ?? null; // optional captcha host pin
 
 // Daemon JSON-RPC, used only for the sync-status line. Defaults to the
@@ -662,11 +642,11 @@ $height_display = "<span style=\"color: {$dot};\">&#9679;</span> " . $height_dis
         <meta property="og:image:height" content="630">
         <meta name="twitter:card" content="summary_large_image">
         <meta name="twitter:image" content="https://cypherfaucet.com/assets/images/og-banner.png">
-        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=9">
+        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=10">
         <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
         <style>
-            strong {
+            .card-body strong {
                 color: #d4d4d4;
             }
             .mono {
@@ -692,25 +672,7 @@ $height_display = "<span style=\"color: {$dot};\">&#9679;</span> " . $height_dis
         </style>
     </head>
     <body>
-        <nav class="navbar">
-            <a href="/">
-                <img src="/assets/images/cypherfaucet-banner.png" alt="Logo">
-            </a>
-
-            <input type="checkbox" class="menu-toggle" id="menu-toggle" />
-
-            <label for="menu-toggle" class="hamburger">
-                <div></div>
-                <div></div>
-                <div></div>
-            </label>
-
-            <div class="nav-links">
-                <a href="/">Home</a>
-                <a href="/contact">Contact</a>
-                <a href="/legal">Legal</a>
-            </div>
-        </nav>
+<?php include __DIR__ . '/nav.php'; ?>
         <br/>
         <div id="main">
             <span class="title is-size-3 has-icon" style="margin-bottom: 0em !important;">
@@ -791,6 +753,7 @@ $height_display = "<span style=\"color: {$dot};\">&#9679;</span> " . $height_dis
 <?php if ($mainnet_qr !== '') { ?>
                     <p><img src="<?php echo $qr_safe; ?>" alt="Monero donation QR code" style="width: 180px; max-width: 100%; height: auto; margin-top: 8px;"></p>
 <?php } ?>
+                    <p style="margin-top: 8px;">See every way to support the faucet on the <a href="/donate" class="site_link">donations page</a>.</p>
 <?php } ?>
                 </div>
             </div>

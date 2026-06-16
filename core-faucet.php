@@ -8,45 +8,25 @@
  * JSON-RPC (getbalance / validateaddress / sendtoaddress / getblockchaininfo).
  *
  * The active coin is chosen by ?coin=, set by .htaccess when rewriting the
- * pretty URLs (/ltc-testnet -> ?coin=ltc, /btc-testnet -> ?coin=btc). Adding a
- * coin is one entry below plus its RPC creds in config.php; no new code.
+ * pretty URLs (/ltc-testnet -> ?coin=ltc, /btc-testnet -> ?coin=btc). This
+ * engine serves the faucets.php entries tagged 'engine' => 'core'; adding a coin
+ * is one catalog entry plus its RPC creds in config.php, no new code.
  */
 
-// ---- Coin definitions (one engine, many coins) --------------------------
-$COINS = [
-    'ltc' => [
-        'net_label'     => 'Litecoin Testnet',
-        'currency'      => 'tLTC',
-        'table'         => 'tltc_payouts',
-        'rpc_port'      => 19332,
-        'payout_amount' => 0.01,
-        'claim_hours'   => 1,
-        'address_hint'  => 'starts with m, n, Q, tltc1, or tmweb1',
-        'canonical'     => '/ltc-testnet',
-        'explorer_tx'   => 'https://litecoinspace.org/testnet/tx/', // '' shows a bare txid
-        'icon'          => '/assets/images/litecoin.png',
-    ],
-    'btc' => [
-        'net_label'     => 'Bitcoin Testnet4',
-        'currency'      => 'tBTC',
-        'table'         => 'tbtc_payouts',
-        'rpc_port'      => 48332, // testnet4 default (testnet3 is 18332)
-        'payout_amount' => 0.01,
-        'claim_hours'   => 1,
-        'address_hint'  => 'starts with m, n, 2, or tb1',
-        'canonical'     => '/btc-testnet',
-        'explorer_tx'   => 'https://mempool.space/testnet4/tx/', // '' shows a bare txid
-        'icon'          => '/assets/images/bitcoin.png',
-    ],
-];
+// ---- Faucet catalog -----------------------------------------------------
+// Every faucet's full definition lives in faucets.php (shared with the Monero
+// engine and the homepage). This engine serves only the 'core' entries
+// (Bitcoin Core RPC); anything else 404s.
+$catalog = require __DIR__ . '/faucets.php';
 
-// Which coin? Set by the .htaccess rewrite; reject anything not in the map.
+// Which coin? Set by the .htaccess rewrite; reject anything this engine
+// doesn't serve.
 $coin = $_GET['coin'] ?? '';
-if (!isset($COINS[$coin])) {
+if (!isset($catalog[$coin]) || ($catalog[$coin]['engine'] ?? '') !== 'core') {
     http_response_code(404);
     exit;
 }
-$c = $COINS[$coin];
+$c = $catalog[$coin];
 
 // ---- Config -------------------------------------------------------------
 $net_label     = $c['net_label'];
@@ -55,7 +35,7 @@ $table         = $c['table'];
 $payout_amount = $c['payout_amount'];
 $claim_hours   = $c['claim_hours'];
 $address_hint  = $c['address_hint'];
-$canonical     = $c['canonical'];
+$canonical     = $c['href'];
 $explorer_tx   = $c['explorer_tx'];
 $coin_icon     = $c['icon'];
 $rpc_port      = $c['rpc_port'];
@@ -509,11 +489,11 @@ $height_display = "<span style=\"color: {$dot};\">&#9679;</span> " . $height_dis
         <meta property="og:image:height" content="630">
         <meta name="twitter:card" content="summary_large_image">
         <meta name="twitter:image" content="https://cypherfaucet.com/assets/images/og-banner.png">
-        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=9">
+        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=10">
         <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
         <style>
-            strong {
+            .card-body strong {
                 color: #d4d4d4;
             }
             .mono {
@@ -539,25 +519,7 @@ $height_display = "<span style=\"color: {$dot};\">&#9679;</span> " . $height_dis
         </style>
     </head>
     <body>
-        <nav class="navbar">
-            <a href="/">
-                <img src="/assets/images/cypherfaucet-banner.png" alt="Logo">
-            </a>
-
-            <input type="checkbox" class="menu-toggle" id="menu-toggle" />
-
-            <label for="menu-toggle" class="hamburger">
-                <div></div>
-                <div></div>
-                <div></div>
-            </label>
-
-            <div class="nav-links">
-                <a href="/">Home</a>
-                <a href="/contact">Contact</a>
-                <a href="/legal">Legal</a>
-            </div>
-        </nav>
+<?php include __DIR__ . '/nav.php'; ?>
         <br/>
         <div id="main">
             <span class="title is-size-3 has-icon" style="margin-bottom: 0em !important;">
@@ -639,6 +601,7 @@ $height_display = "<span style=\"color: {$dot};\">&#9679;</span> " . $height_dis
 <?php if ($mainnet_qr !== '') { ?>
                     <p><img src="<?php echo $mainnet_qr_safe; ?>" alt="<?php echo $mainnet_ticker; ?> donation QR code" style="width: 180px; max-width: 100%; height: auto; margin-top: 8px;"></p>
 <?php } ?>
+                    <p style="margin-top: 8px;">See every way to support the faucet on the <a href="/donate" class="site_link">donations page</a>.</p>
 <?php } ?>
                 </div>
             </div>

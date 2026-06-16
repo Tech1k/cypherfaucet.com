@@ -24,28 +24,10 @@ header('Retry-After: 3600');
         <link rel="shortcut icon" href="/assets/images/favicon.png" type="image/png" />
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="theme-color" content="#c5c5c5">
-        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=9">
+        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=10">
     </head>
     <body>
-        <nav class="navbar">
-            <a href="/">
-                <img src="/assets/images/cypherfaucet-banner.png" alt="Logo">
-            </a>
-
-            <input type="checkbox" class="menu-toggle" id="menu-toggle" />
-
-            <label for="menu-toggle" class="hamburger">
-                <div></div>
-                <div></div>
-                <div></div>
-            </label>
-
-            <div class="nav-links">
-                <a href="/">Home</a>
-                <a href="/contact">Contact</a>
-                <a href="/legal">Legal</a>
-            </div>
-        </nav>
+<?php include __DIR__ . '/nav.php'; ?>
         <br/>
         <div id="main">
             <p align="center">

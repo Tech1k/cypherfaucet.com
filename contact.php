@@ -25,28 +25,10 @@ $source_url = $cfg['source_url'] ?? 'https://github.com/Tech1k/cypherfaucet';
         <meta property="og:title" content="CypherFaucet | Contact">
         <meta property="og:site_name" content="CypherFaucet">
         <meta property="og:url" content="https://cypherfaucet.com/contact">
-        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=9">
+        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=10">
 	</head>
 	<body>
-        <nav class="navbar">
-            <a href="/">
-                <img src="/assets/images/cypherfaucet-banner.png" alt="Logo">
-            </a>
-
-            <input type="checkbox" class="menu-toggle" id="menu-toggle" />
-
-            <label for="menu-toggle" class="hamburger">
-                <div></div>
-                <div></div>
-                <div></div>
-            </label>
-
-            <div class="nav-links">
-                <a href="/">Home</a>
-                <a href="/contact" id="curpage">Contact</a>
-                <a href="/legal">Legal</a>
-            </div>
-        </nav>
+<?php $nav_current = 'contact'; include __DIR__ . '/nav.php'; ?>
 
 		<div id="main">
             <h1>Contact</h1>

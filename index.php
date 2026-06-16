@@ -2,17 +2,21 @@
 $cfg = is_file(__DIR__ . '/config.php') ? (require __DIR__ . '/config.php') : [];
 $source_url = $cfg['source_url'] ?? 'https://github.com/Tech1k/cypherfaucet';
 
-// One row per faucet. A faucet hidden here (enabled=false in config) also
-// serves a 503 "offline" page from its engine, so the homepage and the faucet
-// pages always agree. Absent key defaults to on.
+// Cards are built from faucets.php (the shared economics source the engines also
+// read), so each "Get X every Y" line always matches what that faucet pays. A
+// faucet hidden by enabled=false in config also serves a 503 from its engine,
+// so the homepage and the faucet pages stay in sync. Absent key defaults to on.
 $enabled = $cfg['enabled'] ?? [];
 $is_on = fn($k) => (($enabled[$k] ?? true) !== false);
-$faucets = [
-    ['key' => 'stagenet', 'label' => 'Monero Stagenet Faucet', 'blurb' => 'Get 0.01 sXMR every hour',      'href' => '/xmr-stagenet', 'icon' => '/assets/images/monero.png',   'alt' => 'Monero'],
-    ['key' => 'testnet',  'label' => 'Monero Testnet Faucet',  'blurb' => 'Get 0.01 tXMR every hour',      'href' => '/xmr-testnet',  'icon' => '/assets/images/monero.png',   'alt' => 'Monero'],
-    ['key' => 'ltc',      'label' => 'Litecoin Testnet Faucet', 'blurb' => 'Get 0.1 tLTC every 12 hours',   'href' => '/ltc-testnet',  'icon' => '/assets/images/litecoin.png', 'alt' => 'Litecoin'],
-    ['key' => 'btc',      'label' => 'Bitcoin Testnet4 Faucet', 'blurb' => 'Get 0.0001 tBTC every 12 hours', 'href' => '/btc-testnet', 'icon' => '/assets/images/bitcoin.png',  'alt' => 'Bitcoin'],
-];
+$faucets = require __DIR__ . '/faucets.php';
+
+// Show a "support the faucet" link only when at least one mainnet donation
+// address (or the OpenAlias) is configured. The /donate page itself redirects
+// home when nothing is set, so this stays fork-neutral.
+$has_donations = ($cfg['mainnet_openalias'] ?? '') !== ''
+    || ($cfg['mainnet_xmr'] ?? '') !== ''
+    || ($cfg['mainnet_ltc'] ?? '') !== ''
+    || ($cfg['mainnet_btc'] ?? '') !== '';
 ?>
 <!-- SPDX-License-Identifier: AGPL-3.0-or-later  |  Copyright (C) 2025-2026 Tech1k -->
 <!DOCTYPE html>
@@ -37,28 +41,10 @@ $faucets = [
         <meta property="og:title" content="CypherFaucet">
         <meta property="og:site_name" content="CypherFaucet">
         <meta property="og:url" content="https://cypherfaucet.com">
-        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=9">
+        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=10">
     </head>
     <body>
-        <nav class="navbar">
-            <a href="/">
-                <img src="/assets/images/cypherfaucet-banner.png" alt="Logo">
-            </a>
-
-            <input type="checkbox" class="menu-toggle" id="menu-toggle" />
-
-            <label for="menu-toggle" class="hamburger">
-                <div></div>
-                <div></div>
-                <div></div>
-            </label>
-
-            <div class="nav-links">
-                <a href="/" id="curpage">Home</a>
-                <a href="/contact">Contact</a>
-                <a href="/legal">Legal</a>
-            </div>
-        </nav>
+<?php $nav_current = 'home'; include __DIR__ . '/nav.php'; ?>
 
         <br/><br/><br/>
 
@@ -72,16 +58,23 @@ $faucets = [
             </p>
 
             <div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
-<?php foreach ($faucets as $f) { if (!$is_on($f['key'])) { continue; } ?>
+<?php foreach ($faucets as $key => $f) {
+    if (!$is_on($key)) { continue; }
+    $interval = $f['claim_hours'] == 1 ? 'every hour' : "every {$f['claim_hours']} hours";
+    $blurb = "Get {$f['payout_amount']} {$f['currency']} {$interval}";
+?>
                 <div style="display: flex; align-items: center; margin-top: 10px;">
                     <img src="<?php echo $f['icon']; ?>" width="32px" style="margin-right: 8px;" alt="<?php echo $f['alt']; ?>">
                     <div>
                         <a href="<?php echo $f['href']; ?>" style="text-decoration: none; font-size: 18px;"><?php echo $f['label']; ?></a><br>
-                        <small style="font-size: 15px;"><?php echo $f['blurb']; ?></small>
+                        <small style="font-size: 15px;"><?php echo $blurb; ?></small>
                     </div>
                 </div>
 <?php } ?>
             </div>
+<?php if ($has_donations) { ?>
+            <p align="center" style="margin-top: 28px;"><a href="/donate" class="site_link">Support the faucet</a></p>
+<?php } ?>
             <br/><br/><br/><br/><br/>
             <footer>
                 <hr/>
