@@ -6,7 +6,7 @@
  *
  * Deletes payout rows older than the retention window from every payout table,
  * then VACUUMs to reclaim space. Rate limiting only needs rows inside the claim
- * window (1h for XMR, 12h for tLTC); we keep a few days as an abuse-forensics
+ * window (set per faucet in faucets.php); we keep a few days as an abuse-forensics
  * buffer. Pruning
  * also bounds table growth and limits how long claimer IPs (PII) are retained.
  *

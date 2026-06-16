@@ -63,9 +63,9 @@ return [
     'mainnet_xmr'    => '',
     'mainnet_xmr_qr' => '', // e.g. '/assets/images/monero-qr.png'
     'mainnet_ltc'    => '',
-    'mainnet_ltc_qr' => '',
+    'mainnet_ltc_qr' => '', // e.g. '/assets/images/litecoin-qr.png'
     'mainnet_btc'    => '',
-    'mainnet_btc_qr' => '',
+    'mainnet_btc_qr' => '', // e.g. '/assets/images/bitcoin-qr.png'
 
     // OpenAlias handle, shared across coins: a single FQDN resolves to the right
     // address per coin via its DNS TXT records (enable DNSSEC for the verified

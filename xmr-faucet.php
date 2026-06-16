@@ -489,7 +489,7 @@ if ($bal === null) {
 
                             if ($explorer_tx !== '') {
                                 $explorer_safe = htmlspecialchars($explorer_tx, ENT_QUOTES, 'UTF-8');
-                                $body .= "<a href=\"{$explorer_safe}{$txid_safe}\" target=\"_blank\" rel=\"noopener\" class=\"site_link\" class=\"mono\">{$txid_safe}</a>"
+                                $body .= "<a href=\"{$explorer_safe}{$txid_safe}\" target=\"_blank\" rel=\"noopener\" class=\"site_link mono\">{$txid_safe}</a>"
                                        . "<br/><br/><span>It may take a minute for the transaction to show up on the explorer.</span>";
                             } else {
                                 $body .= "<code class=\"mono\">{$txid_safe}</code>";

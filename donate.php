@@ -39,7 +39,7 @@ $openalias_safe = htmlspecialchars($openalias, ENT_QUOTES, 'UTF-8');
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="icon" href="/assets/images/favicon.png" type="image/png" />
         <link rel="shortcut icon" href="/assets/images/favicon.png" type="image/png" />
-        <meta name="description" content="Support CypherFaucet with an optional mainnet donation. These testnet faucets are free and run to give back.">
+        <meta name="description" content="Support CypherFaucet with an optional mainnet donation. These testnet faucets are free; I run them to give back.">
         <meta name="robots" content="index, follow">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="theme-color" content="#c5c5c5">

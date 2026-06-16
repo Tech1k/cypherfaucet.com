@@ -38,7 +38,7 @@ return [
         'href'          => '/xmr-stagenet',
         'icon'          => '/assets/images/monero.png',
         'alt'           => 'Monero',
-        // Optional: 'daemon_url' => 'http://127.0.0.1:38081/json_rpc', 'expected_host' => 'cypherfaucet.com',
+        // Optional per-faucet override: 'daemon_url' => 'http://127.0.0.1:38081/json_rpc',
     ],
     'testnet' => [
         'engine'        => 'xmr',

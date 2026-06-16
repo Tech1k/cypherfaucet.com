@@ -71,12 +71,12 @@ network chosen by the URL via `.htaccess`:
    - **Monero:** run `monero-wallet-rpc` for each net on the expected ports
      (stagenet `38088`, testnet `28088`) and the matching `monerod` daemons
      (`38081` / `28081`, used only for the sync-status line). Adjust ports or
-     set `daemon_url` per net in the `$FAUCETS` map in
-     [xmr-faucet.php](xmr-faucet.php) if your setup differs.
+     set `daemon_url` per net in the faucet catalog
+     [faucets.php](faucets.php) if your setup differs.
    - **Litecoin:** run `litecoind -testnet` with `server=1` and
      `rpcuser` / `rpcpassword` matching `config.php`, RPC bound to `127.0.0.1`
-     (port `19332`). Ports and the explorer link live in the `$COINS` map in
-     [core-faucet.php](core-faucet.php).
+     (port `19332`). Ports and the explorer link live in
+     [faucets.php](faucets.php).
 
 4. **Web server.** Serve the directory with Apache + `mod_rewrite`. The
    `.htaccess` maps `/xmr-stagenet`, `/xmr-testnet`, and `/ltc-testnet` to the
@@ -164,17 +164,18 @@ itself, so just keep the wallet topped up with spendable tLTC.
 
 ## Adding another Bitcoin Core-family coin
 
-[core-faucet.php](core-faucet.php) is coin-agnostic; Bitcoin testnet is already
-stubbed in its `$COINS` map. To enable a coin:
+[core-faucet.php](core-faucet.php) is coin-agnostic; the active coins live in the
+shared catalog [faucets.php](faucets.php). To add one:
 
-1. Uncomment (or add) its entry in the `$COINS` map, setting the RPC port,
-   payout, claim window, address hint, and explorer URL.
+1. Add its entry to [faucets.php](faucets.php) with `'engine' => 'core'`, setting
+   the currency, payout, claim window, RPC port, table, address hint, explorer
+   URL, and the homepage card fields.
 2. Add the matching pretty-URL rewrite in `.htaccess`
    (e.g. `^btc-testnet/?$ core-faucet.php?coin=btc`).
 3. Add its payout table (e.g. `tbtc_payouts`) and IP index to
    [db/create_db.py](db/create_db.py), and the table name to
    [db/cleanup.php](db/cleanup.php).
-4. Set `<coin>_rpc_user` / `<coin>_rpc_pass` (and optionally `donate_<coin>`)
+4. Set `<coin>_rpc_user` / `<coin>_rpc_pass` (and optionally `donate_t<coin>`)
    in `config.php`, and run the daemon (e.g. `bitcoind -testnet`).
 
 ## Security notes
