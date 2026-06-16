@@ -529,7 +529,7 @@ $height_display = "<span style=\"color: {$dot};\">&#9679;</span> " . $height_dis
             <br/>
             <span style="font-size: 18px;"><b>Receive <?php echo $payout_amount; ?> <?php echo $currency; ?> <?php echo $claim_text; ?>.</b></span>
             <br/>
-            <span>&#9888; The <?php echo $net_label; ?> is used for testing. Testnet funds have no value!</span>
+            <span>&#9888; The <?php echo $net_label; ?> network is used for testing. Testnet funds have no value!</span>
 
             <div class="card">
                 <div class="card-header"><b>Faucet Statistics</b></div>
@@ -578,8 +578,8 @@ $height_display = "<span style=\"color: {$dot};\">&#9679;</span> " . $height_dis
                 <div class="card-body">
                     <h3>How do I use the faucet?</h3>
                     <p>To use the faucet, enter your <?php echo $net_label; ?> wallet address, complete the captcha, and click "Send <?php echo $currency; ?>". By using the faucet you agree to our <a href="/legal#terms" class="site_link"><b>Terms and Conditions</b></a>.</p>
-                    <h3>What is the <?php echo $net_label; ?>?</h3>
-                    <p>The <?php echo $net_label; ?> is a separate network that lets developers test in place of the mainnet counterpart without using coins that have value.</p>
+                    <h3>What is the <?php echo $net_label; ?> network?</h3>
+                    <p>The <?php echo $net_label; ?> network lets developers test in place of the mainnet counterpart without using coins that have value.</p>
                     <h3>Why don't I see the coins in my wallet or on the explorer?</h3>
                     <p>Sometimes the testnet is slow with propagating transactions and the explorers could be running a bit behind. Give it a few minutes and you should be able to see the coins in your wallet (assuming you entered the correct wallet address) and on the explorer via the txid.</p>
                     <h3>The captcha isn't working. What should I do?</h3>

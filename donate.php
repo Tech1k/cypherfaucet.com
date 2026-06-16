@@ -77,7 +77,7 @@ $openalias_safe = htmlspecialchars($openalias, ENT_QUOTES, 'UTF-8');
             <div class="card">
                 <div class="card-header"><b>OpenAlias</b></div>
                 <div class="card-body">
-                    <p>One handle resolves to the right address per coin in supporting wallets:</p>
+                    <p>One handle resolves to the right address per coin in <a href="https://cyphertoshi.com/posts/openalias-wallets" target="_blank" rel="noopener">supporting wallets</a>:</p>
                     <p><code class="mono"><?php echo $openalias_safe; ?></code> <button type="button" class="copybtn" data-copy="<?php echo $openalias_safe; ?>">Copy</button></p>
                 </div>
             </div>
