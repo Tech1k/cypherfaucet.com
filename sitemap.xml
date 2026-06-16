@@ -15,6 +15,16 @@
                 <priority>0.90</priority>
         </url>
         <url>
+                <loc>https://cypherfaucet.com/ltc-testnet</loc>
+                <changefreq>always</changefreq>
+                <priority>0.90</priority>
+        </url>
+        <url>
+                <loc>https://cypherfaucet.com/btc-testnet</loc>
+                <changefreq>always</changefreq>
+                <priority>0.90</priority>
+        </url>
+        <url>
                 <loc>https://cypherfaucet.com/contact</loc>
                 <changefreq>weekly</changefreq>
                 <priority>0.90</priority>

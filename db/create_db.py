@@ -34,6 +34,30 @@ CREATE TABLE IF NOT EXISTS xmr_testnet_payouts (
 );
 '''
 
+create_tltc = '''
+CREATE TABLE IF NOT EXISTS tltc_payouts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    payout_address TEXT NOT NULL,
+    ip_address TEXT NOT NULL,
+    payout_amount REAL NOT NULL,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+    transaction_id TEXT,
+    UNIQUE (payout_address, timestamp)
+);
+'''
+
+create_tbtc = '''
+CREATE TABLE IF NOT EXISTS tbtc_payouts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    payout_address TEXT NOT NULL,
+    ip_address TEXT NOT NULL,
+    payout_amount REAL NOT NULL,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+    transaction_id TEXT,
+    UNIQUE (payout_address, timestamp)
+);
+'''
+
 # Lifetime stats counter, keyed by net. Kept separate from the payout rows so
 # the retention sweep can prune old claims without resetting "Total Sent".
 create_totals = '''
@@ -46,6 +70,8 @@ CREATE TABLE IF NOT EXISTS faucet_totals (
 
 cursor.execute(create_sxmr)
 cursor.execute(create_txmr)
+cursor.execute(create_tltc)
+cursor.execute(create_tbtc)
 cursor.execute(create_totals)
 
 # Indexes for the rate-limit lookup, which filters on
@@ -55,6 +81,8 @@ cursor.execute(create_totals)
 indexes = [
     "CREATE INDEX IF NOT EXISTS idx_xmr_stagenet_ip_ts  ON xmr_stagenet_payouts(ip_address, timestamp);",
     "CREATE INDEX IF NOT EXISTS idx_xmr_testnet_ip_ts   ON xmr_testnet_payouts(ip_address, timestamp);",
+    "CREATE INDEX IF NOT EXISTS idx_tltc_ip_ts          ON tltc_payouts(ip_address, timestamp);",
+    "CREATE INDEX IF NOT EXISTS idx_tbtc_ip_ts          ON tbtc_payouts(ip_address, timestamp);",
 ]
 for stmt in indexes:
     cursor.execute(stmt)
@@ -62,4 +90,4 @@ for stmt in indexes:
 db.commit()
 db.close()
 
-print("Database initialized and tables xmr_stagenet_payouts, xmr_testnet_payouts, faucet_totals created successfully.")
+print("Database initialized and tables xmr_stagenet_payouts, xmr_testnet_payouts, tltc_payouts, tbtc_payouts, faucet_totals created successfully.")

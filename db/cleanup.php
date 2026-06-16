@@ -6,7 +6,8 @@
  *
  * Deletes payout rows older than the retention window from every payout table,
  * then VACUUMs to reclaim space. Rate limiting only needs rows inside the claim
- * window (1h for XMR); we keep a few days as an abuse-forensics buffer. Pruning
+ * window (1h for XMR, 12h for tLTC); we keep a few days as an abuse-forensics
+ * buffer. Pruning
  * also bounds table growth and limits how long claimer IPs (PII) are retained.
  *
  * Usage:
@@ -33,7 +34,7 @@ if ($retentionDays < 1) {
     $retentionDays = 7;
 }
 
-$tables = ['xmr_stagenet_payouts', 'xmr_testnet_payouts'];
+$tables = ['xmr_stagenet_payouts', 'xmr_testnet_payouts', 'tltc_payouts', 'tbtc_payouts'];
 
 try {
     $db = new PDO("sqlite:$dbFile");

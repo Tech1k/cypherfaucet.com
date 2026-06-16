@@ -11,8 +11,9 @@ Options -Indexes
     Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
 </IfModule>
 
-# Custom error page.
+# Custom error pages.
 ErrorDocument 404 /404.php
+ErrorDocument 503 /503.php
 
 # Hide sensitive files and dirs from the web. Return 404 (not 403) so their
 # existence isn't even confirmed. Covers dotfiles (.git, .gitignore, .ht*, the
@@ -21,13 +22,14 @@ RewriteRule (^|/)\.(?!well-known/) - [L,R=404]
 RewriteRule ^(db|tools)(/|$) - [L,R=404]
 RewriteRule ^(config\.php|config\.example\.php|LICENSE|README\.md|SECURITY\.md)$ - [L,R=404]
 
-# Litecoin testnet faucet retired (May 2026). Send old/listed links home.
-RewriteRule ^ltc-testnet(\.php)?/?$ / [R=301,L]
-
 # Both Monero faucets are served by the single xmr-faucet.php, selected by ?net=.
 # Internal rewrites (no R flag) so the pretty URLs stay in the address bar.
 RewriteRule ^xmr-stagenet/?$ xmr-faucet.php?net=stagenet [L]
 RewriteRule ^xmr-testnet/?$  xmr-faucet.php?net=testnet  [L]
+
+# Bitcoin Core-family faucets share core-faucet.php, selected by ?coin=.
+RewriteRule ^ltc-testnet/?$ core-faucet.php?coin=ltc [L]
+RewriteRule ^btc-testnet/?$ core-faucet.php?coin=btc [L]
 
 # Strip .php from direct requests only. The REDIRECT_STATUS guard keeps this
 # from firing on internal error subrequests (e.g. the 404 ErrorDocument), which

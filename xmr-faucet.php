@@ -99,6 +99,18 @@ $rpcUrl  = "http://127.0.0.1:$rpc_port/json_rpc";
 $rpcUser = $config['rpc_user'] ?? '';
 $rpcPass = $config['rpc_pass'] ?? '';
 
+// Per-net on/off switch from config (shared with core-faucet.php and the
+// homepage). A net absent from the 'enabled' map defaults to on; set it false
+// in config.php to take that faucet offline (its homepage card hides too).
+$faucet_enabled = (($config['enabled'][$net] ?? true) !== false);
+if (!$faucet_enabled) {
+    // Switched off in config: skip the DB and wallet RPC entirely, serve the
+    // styled 503 page so the homepage card and this URL stay in sync.
+    $reason = "The Monero {$net_label} faucet is temporarily offline. Please check back soon.";
+    require __DIR__ . '/503.php';
+    exit;
+}
+
 $display_form = "";
 $active_err   = "";
 
@@ -292,8 +304,8 @@ try {
 } catch (PDOException $e) {
     // Log the detail (incl. path) server-side; never expose it to the client.
     error_log("[xmr-faucet] DB connection failed for {$dbFile}: " . $e->getMessage());
-    http_response_code(503);
-    die("The faucet is temporarily unavailable. Please try again later.");
+    require __DIR__ . '/503.php';
+    exit;
 }
 
 $error_msg = card('alert', ' alertborder', 'Faucet Error',

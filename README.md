@@ -1,26 +1,36 @@
 # CypherFaucet
 
-A small, focused Monero **stagenet** and **testnet** faucet. Developers enter a
-dev-net address, complete a captcha, and receive a fixed payout once per hour.
-It is the faucet running at [cypherfaucet.com](https://cypherfaucet.com) and
-listed on getmonero.org.
+A small, focused dev-net faucet. Developers enter a testnet/stagenet address,
+complete a captcha, and receive a fixed payout on a rate limit. It serves
+Monero (**stagenet** and **testnet**) and Litecoin (**testnet**), runs at
+[cypherfaucet.com](https://cypherfaucet.com), and is listed on getmonero.org.
 
-Both nets are served by a single file ([xmr-faucet.php](xmr-faucet.php)),
-selected by the URL via `.htaccess`.
+Two engines share one database, design, and rate-limit logic, with the active
+network chosen by the URL via `.htaccess`:
+
+- [xmr-faucet.php](xmr-faucet.php) for Monero, both nets selected by `?net=`.
+- [core-faucet.php](core-faucet.php) for Bitcoin Core-family coins, selected by
+  `?coin=` (Litecoin testnet today; Bitcoin testnet ready behind one config
+  entry, no new code).
 
 ## Features
 
-- One file, two nets (stagenet + testnet) defined in a config map.
+- Two engines, one shared DB, style, and rate-limit design:
+  - **Monero** ([xmr-faucet.php](xmr-faucet.php)): stagenet and testnet in one
+    file, gated on the wallet's **unlocked** balance so it never offers a claim
+    it can't pay (Monero locks outputs for 10 blocks), with **payment proof**
+    on each receipt (a `get_tx_proof` signature that verifies in the Monero
+    GUI's Prove/Check or CLI) for when the dev-net explorers are down.
+  - **Bitcoin Core-family** ([core-faucet.php](core-faucet.php)): Litecoin
+    testnet today (tLTC), Bitcoin testnet ready behind one config entry. Talks
+    to a Bitcoin Core JSON-RPC and links each receipt's txid to a block
+    explorer.
+- Each coin/net defined as a config map entry, not duplicated code.
 - Cloudflare Turnstile captcha.
-- Per-address and per-IP rate limiting (once per hour), serialized so
+- Per-address and per-IP rate limiting, serialized with `BEGIN IMMEDIATE` so
   concurrent requests can't double-claim.
-- Gates on the wallet's **unlocked** balance, so it never offers a claim it
-  can't pay (Monero locks outputs for 10 blocks).
 - Live wallet/daemon **sync status** and **lifetime** stats (total sent /
   payouts / last payout), kept in a counter table that survives data pruning.
-- **Payment proof** on each receipt: a `get_tx_proof` signature that verifies
-  in the Monero GUI (Prove/Check) or CLI, plus the `check_tx_key` command.
-  Useful when the dev-net block explorers are down.
 - IP retention sweep (cron) so claimer IPs are not kept indefinitely.
 
 ## Requirements
@@ -28,8 +38,10 @@ selected by the URL via `.htaccess`.
 - PHP 7.4+ with `pdo_sqlite` and `curl`.
 - Apache with `mod_rewrite` (and `mod_headers` for the security headers). The
   routing lives in [.htaccess](.htaccess); nginx users must translate it.
-- A `monerod` + `monero-wallet-rpc` instance **per net** (stagenet and
-  testnet), bound to `127.0.0.1`.
+- For Monero: a `monerod` + `monero-wallet-rpc` instance **per net** (stagenet
+  and testnet), bound to `127.0.0.1`.
+- For Litecoin: a `litecoind` on testnet (`-testnet`) with `server=1` and its
+  RPC bound to `127.0.0.1` (default port `19332`), holding spendable tLTC.
 - SQLite 3.24+ (for the `ON CONFLICT` upsert used by the stats counter).
 
 ## Setup
@@ -38,9 +50,10 @@ selected by the URL via `.htaccess`.
    ```sh
    cp config.example.php config.php
    ```
-   Set your Turnstile sitekey/secret, the wallet RPC credentials (or leave
-   blank if the wallet uses `--disable-rpc-login` on localhost), and your
-   public `source_url`. `config.php` is gitignored; never commit it.
+   Set your Turnstile sitekey/secret, the Monero wallet RPC credentials (or
+   leave blank if the wallet uses `--disable-rpc-login` on localhost), the
+   Litecoin `ltc_rpc_user` / `ltc_rpc_pass`, and your public `source_url`.
+   `config.php` is gitignored; never commit it.
 
 2. **Database.** Create the SQLite file and tables:
    ```sh
@@ -54,15 +67,20 @@ selected by the URL via `.htaccess`.
    `db/faucet.db`. Whichever directory holds the DB must be writable by the web
    server user, because SQLite writes a journal there.
 
-3. **Wallets.** Run `monero-wallet-rpc` for each net on the expected ports
-   (stagenet `38088`, testnet `28088`) and the matching `monerod` daemons
-   (`38081` / `28081`, used only for the sync-status line). Adjust ports or set
-   `daemon_url` per net in the `$FAUCETS` map in
-   [xmr-faucet.php](xmr-faucet.php) if your setup differs.
+3. **Wallets and daemons.**
+   - **Monero:** run `monero-wallet-rpc` for each net on the expected ports
+     (stagenet `38088`, testnet `28088`) and the matching `monerod` daemons
+     (`38081` / `28081`, used only for the sync-status line). Adjust ports or
+     set `daemon_url` per net in the `$FAUCETS` map in
+     [xmr-faucet.php](xmr-faucet.php) if your setup differs.
+   - **Litecoin:** run `litecoind -testnet` with `server=1` and
+     `rpcuser` / `rpcpassword` matching `config.php`, RPC bound to `127.0.0.1`
+     (port `19332`). Ports and the explorer link live in the `$COINS` map in
+     [core-faucet.php](core-faucet.php).
 
 4. **Web server.** Serve the directory with Apache + `mod_rewrite`. The
-   `.htaccess` maps `/xmr-stagenet` and `/xmr-testnet` to the app and denies
-   web access to `db/`.
+   `.htaccess` maps `/xmr-stagenet`, `/xmr-testnet`, and `/ltc-testnet` to the
+   apps and denies web access to `db/`.
 
 5. **Retention cron.** Prune old claim rows (PII) daily:
    ```cron
@@ -140,6 +158,24 @@ WantedBy=timers.target
 
 Enable with `systemctl enable --now cypherfaucet-topup.timer`. (systemd won't
 start a second run while one is still active, so no lock file is needed here.)
+
+The Litecoin faucet needs no equivalent: Bitcoin Core manages change outputs
+itself, so just keep the wallet topped up with spendable tLTC.
+
+## Adding another Bitcoin Core-family coin
+
+[core-faucet.php](core-faucet.php) is coin-agnostic; Bitcoin testnet is already
+stubbed in its `$COINS` map. To enable a coin:
+
+1. Uncomment (or add) its entry in the `$COINS` map, setting the RPC port,
+   payout, claim window, address hint, and explorer URL.
+2. Add the matching pretty-URL rewrite in `.htaccess`
+   (e.g. `^btc-testnet/?$ core-faucet.php?coin=btc`).
+3. Add its payout table (e.g. `tbtc_payouts`) and IP index to
+   [db/create_db.py](db/create_db.py), and the table name to
+   [db/cleanup.php](db/cleanup.php).
+4. Set `<coin>_rpc_user` / `<coin>_rpc_pass` (and optionally `donate_<coin>`)
+   in `config.php`, and run the daemon (e.g. `bitcoind -testnet`).
 
 ## Security notes
 

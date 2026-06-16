@@ -61,9 +61,9 @@ $source_url = $cfg['source_url'] ?? 'https://github.com/Tech1k/cypherfaucet';
                 <p>Please read these Terms and Conditions ("Terms") carefully before using cypherfaucet.com (the "Site") operated by CypherFaucet ("us," "we," or "our").</p>
                 <p>We use your Personal Information only for providing and improving the Site. By using the Site, you agree to the collection and use of information in accordance with this policy.</p>
                 <h2>Access to the Site</h2>
-                <p>The Site provides a Monero faucet service for developers to receive free coins. By using this service, you acknowledge that you are a developer or a user interested in the networks provided.</p>
+                <p>The Site provides Monero, Litecoin, and Bitcoin faucet services for developers to receive free coins. By using this service, you acknowledge that you are a developer or a user interested in the networks provided.</p>
                 <h2>Coins</h2>
-                <p>We provide coins on the Monero test networks to users who submit their valid wallet address. The distribution of the coins is subject to availability, and we reserve the right to limit or deny the distribution without prior notice.</p>
+                <p>We provide coins on the Monero, Litecoin, and Bitcoin test networks to users who submit their valid wallet address. The distribution of the coins is subject to availability, and we reserve the right to limit or deny the distribution without prior notice.</p>
                 <h2>Intellectual Property</h2>
                 <p>The content and materials available on the Site, including but not limited to text, graphics, images, logos, and software, are the property of CypherFaucet or its licensors and are protected by copyright, trademark, and other intellectual property laws. You may not use, reproduce, modify, or distribute the content without our written permission.</p>
                 <h2>Privacy</h2>

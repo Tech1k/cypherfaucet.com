@@ -1,17 +1,29 @@
 <?php
 $cfg = is_file(__DIR__ . '/config.php') ? (require __DIR__ . '/config.php') : [];
 $source_url = $cfg['source_url'] ?? 'https://github.com/Tech1k/cypherfaucet';
+
+// One row per faucet. A faucet hidden here (enabled=false in config) also
+// serves a 503 "offline" page from its engine, so the homepage and the faucet
+// pages always agree. Absent key defaults to on.
+$enabled = $cfg['enabled'] ?? [];
+$is_on = fn($k) => (($enabled[$k] ?? true) !== false);
+$faucets = [
+    ['key' => 'stagenet', 'label' => 'Monero Stagenet Faucet', 'blurb' => 'Get 0.01 sXMR every hour',      'href' => '/xmr-stagenet', 'icon' => '/assets/images/monero.png',   'alt' => 'Monero'],
+    ['key' => 'testnet',  'label' => 'Monero Testnet Faucet',  'blurb' => 'Get 0.01 tXMR every hour',      'href' => '/xmr-testnet',  'icon' => '/assets/images/monero.png',   'alt' => 'Monero'],
+    ['key' => 'ltc',      'label' => 'Litecoin Testnet Faucet', 'blurb' => 'Get 0.1 tLTC every 12 hours',   'href' => '/ltc-testnet',  'icon' => '/assets/images/litecoin.png', 'alt' => 'Litecoin'],
+    ['key' => 'btc',      'label' => 'Bitcoin Testnet Faucet',  'blurb' => 'Get 0.0001 tBTC every 12 hours', 'href' => '/btc-testnet', 'icon' => '/assets/images/bitcoin.png',  'alt' => 'Bitcoin'],
+];
 ?>
 <!-- SPDX-License-Identifier: AGPL-3.0-or-later  |  Copyright (C) 2025-2026 Tech1k -->
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>CypherFaucet | Monero Testnet &amp; Stagenet Faucet</title>
+        <title>CypherFaucet | Monero, Litecoin &amp; Bitcoin Testnet Faucets</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="icon" href="/assets/images/favicon.png" type="image/png" />
         <link rel="shortcut icon" href="/assets/images/favicon.png" type="image/png" />
-        <meta name="description" content="Free Monero testnet and stagenet coins for developers testing applications.">
+        <meta name="description" content="Free Monero, Litecoin, and Bitcoin testnet coins for developers testing applications.">
         <meta name="robots" content="index, follow">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="theme-color" content="#c5c5c5">
@@ -21,7 +33,7 @@ $source_url = $cfg['source_url'] ?? 'https://github.com/Tech1k/cypherfaucet';
         <meta property="og:image:height" content="630">
         <meta name="twitter:card" content="summary_large_image">
         <meta name="twitter:image" content="https://cypherfaucet.com/assets/images/og-banner.png">
-        <meta property="og:description" content="Free Monero testnet and stagenet coins for developers testing applications.">
+        <meta property="og:description" content="Free Monero, Litecoin, and Bitcoin testnet coins for developers testing applications.">
         <meta property="og:title" content="CypherFaucet">
         <meta property="og:site_name" content="CypherFaucet">
         <meta property="og:url" content="https://cypherfaucet.com">
@@ -56,25 +68,19 @@ $source_url = $cfg['source_url'] ?? 'https://github.com/Tech1k/cypherfaucet';
                 <br/>
                 <span style="font-size: 48px;"><strong>CypherFaucet</strong></span>
                 <br/>
-                <span style="font-size: 32px;">Monero testnet and stagenet faucets.</span>
+                <span style="font-size: 32px;">Monero, Litecoin, and Bitcoin testnet faucets.</span>
             </p>
 
             <div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
+<?php foreach ($faucets as $f) { if (!$is_on($f['key'])) { continue; } ?>
                 <div style="display: flex; align-items: center; margin-top: 10px;">
-                    <img src="/assets/images/monero.png" width="32px" style="margin-right: 8px;" alt="Monero">
+                    <img src="<?php echo $f['icon']; ?>" width="32px" style="margin-right: 8px;" alt="<?php echo $f['alt']; ?>">
                     <div>
-                        <a href="/xmr-stagenet" style="text-decoration: none; font-size: 18px;">Monero Stagenet Faucet</a><br>
-                        <small style="font-size: 15px;">Get 0.01 sXMR every hour</small>
+                        <a href="<?php echo $f['href']; ?>" style="text-decoration: none; font-size: 18px;"><?php echo $f['label']; ?></a><br>
+                        <small style="font-size: 15px;"><?php echo $f['blurb']; ?></small>
                     </div>
                 </div>
-
-                <div style="display: flex; align-items: center; margin-top: 10px;">
-                    <img src="/assets/images/monero.png" width="32px" style="margin-right: 8px;" alt="Monero">
-                    <div>
-                        <a href="/xmr-testnet" style="text-decoration: none; font-size: 18px;">Monero Testnet Faucet</a><br>
-                        <small style="font-size: 15px;">Get 0.01 tXMR every hour</small>
-                    </div>
-                </div>
+<?php } ?>
             </div>
             <br/><br/><br/><br/><br/>
             <footer>
