@@ -78,6 +78,10 @@ $mainnet_qr = $config['mainnet_xmr_qr'] ?? $config['mainnet_qr'] ?? '';         
 $donate_addr = $config["donate_{$nettype}"] ?? '';
 $donate_safe = htmlspecialchars($donate_addr, ENT_QUOTES, 'UTF-8'); // display; keep $donate_addr raw for comparisons
 
+// Optional node-status dashboard URL for this net (status_stagenet / status_testnet).
+// When set, the "Network:" line links to it; blank hides the link.
+$status_url = $config["status_{$nettype}"] ?? '';
+
 // Wallet RPC. Credentials come from config (or leave blank if the wallet runs
 // with --disable-rpc-login bound to localhost).
 $rpcUrl  = "http://127.0.0.1:$rpc_port/json_rpc";
@@ -704,7 +708,7 @@ $height_display = "<span style=\"color: {$dot};\">&#9679;</span> " . $height_dis
                     <span>Total Sent: <strong><?php echo $total_sent; ?></strong> <?php echo $currency; ?></span><br/>
                     <span>Total Payouts: <strong><?php echo $total_payouts; ?></strong></span><br/>
 <?php if ($last_payout !== '') { ?>                    <span>Last payout: <strong><?php echo $last_payout; ?></strong></span><br/>
-<?php } ?>                    <span>Network: <strong><?php echo $height_display; ?></strong></span>
+<?php } ?>                    <span>Network: <strong><?php echo $height_display; ?></strong><?php if ($status_url !== '') { ?> &middot; <a href="<?php echo htmlspecialchars($status_url, ENT_QUOTES, 'UTF-8'); ?>" target="_blank" rel="noopener" class="site_link">node dashboard</a><?php } ?></span>
                 </div>
             </div>
 

@@ -1,0 +1,13 @@
+RewriteEngine On
+
+# The dashboard is include-only (driven by index.php), and its per-network cache
+# files must never be served directly.
+RewriteRule ^dashboard\.php$ - [R=404,L]
+RewriteRule _cache\.json$ - [R=404,L]
+
+# Pretty per-node URLs: /status/<slug> -> index.php?node=<slug>
+# (slug = the faucet URL, e.g. xmr-stagenet, ltc-testnet). Existing files
+# (index.php, assets) are served as-is.
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([a-z0-9-]+)/?$ index.php?node=$1 [L,QSA]

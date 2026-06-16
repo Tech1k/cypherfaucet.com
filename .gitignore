@@ -17,3 +17,8 @@ config.php
 # Python bytecode cache
 __pycache__/
 *.pyc
+
+# Node status: the router (status/index.php, status/.htaccess) is committed; the
+# dashboard itself (your own repo) and its per-network caches are not.
+/status/dashboard.php
+/status/*_cache.json

@@ -232,6 +232,25 @@ a few things differ from clearnet:
   That's fine for testnet coins (no value); **do not enable Tor on a fork holding
   mainnet funds** without adding a real per-identity limit.
 
+## Node status (optional)
+
+`status/` ships a small router that reads this faucet's catalog (`faucets.php`)
+and `config.php`, so the node list and RPC details stay in sync. Drop
+[simple-node-dashboard](https://github.com/Tech1k/simple-node-dashboard)'s
+`index.php` in as `status/dashboard.php` (gitignored, so `git pull` it there to
+update) and you get:
+
+- `/status/` is a landing page listing every node;
+- `/status/<slug>` is that node's full dashboard (`xmr-stagenet`, `ltc-testnet`, ...).
+
+The router maps each faucet to its node automatically (monerod = the wallet RPC
+port minus 7, no auth; Bitcoin Core = the faucet's RPC port and creds) and sets
+the dashboard's `NETWORK` / `RPC_*` env per node. Then point each faucet's
+`status_<net>` key in `config.php` at `/status/<slug>` so the faucet's `Network:`
+line links to it. The dashboard already shows only a peer *count* (no IPs);
+uncomment `SHOW_NODE_INFO=false` in `status/index.php` to also hide the node
+version on a public deployment.
+
 ## License
 
 Copyright (C) 2025-2026 Tech1k

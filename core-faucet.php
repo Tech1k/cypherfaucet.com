@@ -58,6 +58,10 @@ $expected_host = $config['expected_host'] ?? null; // optional captcha host pin
 $donate_addr = $config['donate_' . strtolower($currency)] ?? $config["donate_{$coin}"] ?? '';
 $donate_safe = htmlspecialchars($donate_addr, ENT_QUOTES, 'UTF-8'); // display; keep raw for comparison
 
+// Optional node-status dashboard URL for this coin (status_ltc / status_btc).
+// When set, the "Network:" line links to it; blank hides the link.
+$status_url = $config["status_{$coin}"] ?? '';
+
 // Optional mainnet "support the faucet" address for this coin (mainnet_ltc /
 // mainnet_btc) plus an optional QR, and a shared OpenAlias handle that resolves
 // per coin. Empty by default so the public code asks for nothing; set in
@@ -548,7 +552,7 @@ $height_display = "<span style=\"color: {$dot};\">&#9679;</span> " . $height_dis
                     <span>Total Sent: <strong><?php echo $total_sent; ?></strong> <?php echo $currency; ?></span><br/>
                     <span>Total Payouts: <strong><?php echo $total_payouts; ?></strong></span><br/>
 <?php if ($last_payout !== '') { ?>                    <span>Last payout: <strong><?php echo $last_payout; ?></strong></span><br/>
-<?php } ?>                    <span>Network: <strong><?php echo $height_display; ?></strong></span>
+<?php } ?>                    <span>Network: <strong><?php echo $height_display; ?></strong><?php if ($status_url !== '') { ?> &middot; <a href="<?php echo htmlspecialchars($status_url, ENT_QUOTES, 'UTF-8'); ?>" target="_blank" rel="noopener" class="site_link">node dashboard</a><?php } ?></span>
                 </div>
             </div>
 

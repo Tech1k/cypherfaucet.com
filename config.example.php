@@ -47,6 +47,13 @@ return [
     // footer. Pair it with the Onion-Location header (see README "Tor / onion").
     'onion' => '', // e.g. 'abcd...xyz.onion'
 
+    // Optional per-faucet node-status dashboard URLs. When set, the "Network:"
+    // line on that faucet links to it. Keys match the faucet identifiers.
+    'status_stagenet' => '', // e.g. '/status/xmr-stagenet'
+    'status_testnet'  => '',
+    'status_ltc'      => '',
+    'status_btc'      => '',
+
     // Testnet "return unused coins" addresses, shown in the recycle card and the
     // out-of-coins message. Leave blank to hide the card. The t-prefix (tltc /
     // tbtc) marks these as testnet, to keep them distinct from the mainnet
