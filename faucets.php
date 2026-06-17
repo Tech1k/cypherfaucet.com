@@ -34,7 +34,7 @@ return [
         'rpc_port'      => 38088,
         'table'         => 'xmr_stagenet_payouts',
         'address_hint'  => 'starts with 5 or 7',
-        'explorer_tx'   => '', // stagenet.xmrchain.com unreliable; show txid + payment proof. Re-enable: 'https://stagenet.xmrchain.com/tx/'
+        'explorer_tx'   => 'https://xmr-stagenet.librenode.com/tx/', // self-hosted onion-monero-blockchain-explorer; '' shows a bare txid
         'href'          => '/xmr-stagenet',
         'icon'          => '/assets/images/monero.png',
         'alt'           => 'Monero',
@@ -51,7 +51,7 @@ return [
         'rpc_port'      => 28088,
         'table'         => 'xmr_testnet_payouts',
         'address_hint'  => 'starts with 9, A, or B',
-        'explorer_tx'   => '', // testnet.xmrchain.com unreliable; show txid + payment proof. Re-enable: 'https://testnet.xmrchain.com/tx/'
+        'explorer_tx'   => 'https://xmr-testnet.librenode.com/tx/', // self-hosted onion-monero-blockchain-explorer; '' shows a bare txid
         'href'          => '/xmr-testnet',
         'icon'          => '/assets/images/monero.png',
         'alt'           => 'Monero',

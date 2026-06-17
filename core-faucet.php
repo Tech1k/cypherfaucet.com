@@ -360,7 +360,7 @@ if ($balance === null) {
                     $next->modify("+{$claim_hours} hours");
                     $formatted = $next->format('n/j/Y \a\t g:i:s A') . ' UTC';
                     $active_err = card('alert', ' alertborder', 'Error - Already Claimed',
-                        "<p>It seems that you have already claimed from the faucet within the last {$claim_hours} hours. Please try again later or <a href=\"/contact\" class=\"site_link\"><b>contact us</b></a> if you think this is an error.<br/><br/>You may claim again on <label class=\"utc_next\">{$formatted}</label></p>");
+                        "<p>It seems that you have already claimed from the faucet within the last {$claim_hours} hours. Please try again later or <a href=\"/contact\" class=\"site_link\"><b>contact us</b></a> if you think this is an error.<br/><br/>You may claim again on <span class=\"utc_next\">{$formatted}</span></p>");
                 } elseif ($reservationId !== null) {
                     // ---- Send -------------------------------------------
                     // Pass the amount as a fixed-decimal string to avoid float /

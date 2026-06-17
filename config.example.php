@@ -47,6 +47,10 @@ return [
     // footer. Pair it with the Onion-Location header (see README "Tor / onion").
     'onion' => '', // e.g. 'abcd...xyz.onion'
 
+    // Optional companion testnet mining pool. When set, a small cross-link shows
+    // on the homepage ("Want to mine testnet coins too? Try our testnet pool").
+    'pool_url' => '', // e.g. 'https://testnetpool.com'
+
     // Optional per-faucet node-status dashboard URLs. When set, the "Network:"
     // line on that faucet links to it. Keys match the faucet identifiers.
     'status_stagenet' => '', // e.g. '/status/xmr-stagenet'

@@ -482,11 +482,10 @@ if ($bal === null) {
                             $addr_safe = htmlspecialchars($xmr_address, ENT_QUOTES, 'UTF-8');
                             $txid_safe = htmlspecialchars($txid, ENT_QUOTES, 'UTF-8');
 
-                            // Amount + destination, then the txid (monospace, with
-                            // a copy button). When an explorer is configured the
-                            // txid links to it; otherwise we show the bare hash
-                            // plus Monero's payment proof (GUI + CLI verifiable),
-                            // so a dev can verify the send without an explorer.
+                            // Amount + destination, then the txid (monospace, with a
+                            // copy button). It links to the configured explorer (or
+                            // shows the bare hash if none), and either way we include
+                            // Monero's payment proof so a dev can verify the send.
                             $body = "<span>{$xmr_payout_amount} {$currency} has been sent to:</span>"
                                   . "<br/><code class=\"mono\">{$addr_safe}</code>"
                                   . "<br/><br/><span>Transaction ID</span> <button type=\"button\" class=\"copybtn\" data-copy=\"{$txid_safe}\">Copy</button><br/>";
@@ -497,50 +496,50 @@ if ($bal === null) {
                                        . "<br/><br/><span>It may take a minute for the transaction to show up on the explorer.</span>";
                             } else {
                                 $body .= "<code class=\"mono\">{$txid_safe}</code>";
+                            }
 
-                                // Transaction proof: a signature that verifies in
-                                // BOTH the Monero GUI (Prove/Check) and the CLI. The
-                                // tx key (check_tx_key) is CLI-only, so the raw CLI
-                                // commands live under a collapsed "Advanced (CLI)"
-                                // section. Best-effort: show what the wallet returns.
-                                $proofResp = xmr_rpc($rpcUrl, 'get_tx_proof', [
-                                    'txid'    => $txid,
-                                    'address' => $xmr_address,
-                                ], $rpcUser, $rpcPass);
-                                $tx_proof = $proofResp['result']['signature'] ?? '';
+                            // Transaction proof: a signature that verifies in BOTH
+                            // the Monero GUI (Prove/Check) and the CLI. The tx key
+                            // (check_tx_key) is CLI-only, so the raw CLI commands
+                            // live under a collapsed "Advanced (CLI)" section.
+                            // Best-effort: show what the wallet returns.
+                            $proofResp = xmr_rpc($rpcUrl, 'get_tx_proof', [
+                                'txid'    => $txid,
+                                'address' => $xmr_address,
+                            ], $rpcUser, $rpcPass);
+                            $tx_proof = $proofResp['result']['signature'] ?? '';
 
-                                if ($tx_proof !== '' || $txkey !== '') {
-                                    $body .= "<br/><br/><details style=\"margin-top: 5px;\">"
-                                           . "<summary style=\"cursor: pointer;\">Payment proof</summary>"
-                                           . "<p style=\"margin-top: 8px;\">Verify this payment cryptographically. No blockchain explorer required.</p>";
+                            if ($tx_proof !== '' || $txkey !== '') {
+                                $body .= "<br/><br/><details style=\"margin-top: 5px;\">"
+                                       . "<summary style=\"cursor: pointer;\">Payment proof</summary>"
+                                       . "<p style=\"margin-top: 8px;\">Verify this payment cryptographically. No blockchain explorer required.</p>";
 
-                                    if ($tx_proof !== '') {
-                                        $proof_safe = htmlspecialchars($tx_proof, ENT_QUOTES, 'UTF-8');
-                                        $body .= "<p style=\"margin-bottom: 4px;\"><b>Monero GUI:</b><br/>Advanced &rarr; Prove/Check &rarr; Check Transaction</p>"
-                                               . "<p style=\"margin-bottom: 0;\">Enter:</p>"
-                                               . "<ul style=\"margin-top: 4px;\"><li>Transaction ID (above)</li><li>Recipient address (above)</li><li>Signature (below)</li></ul>"
-                                               . "<p><code class=\"mono\">{$proof_safe}</code><br/><button type=\"button\" class=\"copybtn\" data-copy=\"{$proof_safe}\">Copy signature</button></p>";
-                                    }
-
-                                    // CLI verification, collapsed (advanced users).
-                                    $cli = "";
-                                    if ($tx_proof !== '') {
-                                        $checkproof = "check_tx_proof {$txid_safe} {$addr_safe} {$proof_safe}";
-                                        $cli .= "<p style=\"margin-bottom: 4px;\"><code class=\"mono\">{$checkproof}</code><br/><button type=\"button\" class=\"copybtn\" data-copy=\"{$checkproof}\">Copy</button></p>";
-                                    }
-                                    if ($txkey !== '') {
-                                        $txkey_safe = htmlspecialchars($txkey, ENT_QUOTES, 'UTF-8');
-                                        $checkkey = "check_tx_key {$txid_safe} {$txkey_safe} {$addr_safe}";
-                                        $cli .= "<p style=\"margin-bottom: 4px;\"><code class=\"mono\">{$checkkey}</code><br/><button type=\"button\" class=\"copybtn\" data-copy=\"{$checkkey}\">Copy</button></p>";
-                                    }
-                                    if ($cli !== '') {
-                                        $body .= "<details style=\"margin-top: 8px;\"><summary style=\"cursor: pointer;\">Advanced (CLI)</summary>"
-                                               . "<p style=\"margin-top: 8px; margin-bottom: 4px;\">monero-wallet-cli:</p>" . $cli
-                                               . "</details>";
-                                    }
-
-                                    $body .= "</details>";
+                                if ($tx_proof !== '') {
+                                    $proof_safe = htmlspecialchars($tx_proof, ENT_QUOTES, 'UTF-8');
+                                    $body .= "<p style=\"margin-bottom: 4px;\"><b>Monero GUI:</b><br/>Advanced &rarr; Prove/Check &rarr; Check Transaction</p>"
+                                           . "<p style=\"margin-bottom: 0;\">Enter:</p>"
+                                           . "<ul style=\"margin-top: 4px;\"><li>Transaction ID (above)</li><li>Recipient address (above)</li><li>Signature (below)</li></ul>"
+                                           . "<p><code class=\"mono\">{$proof_safe}</code><br/><button type=\"button\" class=\"copybtn\" data-copy=\"{$proof_safe}\">Copy signature</button></p>";
                                 }
+
+                                // CLI verification, collapsed (advanced users).
+                                $cli = "";
+                                if ($tx_proof !== '') {
+                                    $checkproof = "check_tx_proof {$txid_safe} {$addr_safe} {$proof_safe}";
+                                    $cli .= "<p style=\"margin-bottom: 4px;\"><code class=\"mono\">{$checkproof}</code><br/><button type=\"button\" class=\"copybtn\" data-copy=\"{$checkproof}\">Copy</button></p>";
+                                }
+                                if ($txkey !== '') {
+                                    $txkey_safe = htmlspecialchars($txkey, ENT_QUOTES, 'UTF-8');
+                                    $checkkey = "check_tx_key {$txid_safe} {$txkey_safe} {$addr_safe}";
+                                    $cli .= "<p style=\"margin-bottom: 4px;\"><code class=\"mono\">{$checkkey}</code><br/><button type=\"button\" class=\"copybtn\" data-copy=\"{$checkkey}\">Copy</button></p>";
+                                }
+                                if ($cli !== '') {
+                                    $body .= "<details style=\"margin-top: 8px;\"><summary style=\"cursor: pointer;\">Advanced (CLI)</summary>"
+                                           . "<p style=\"margin-top: 8px; margin-bottom: 4px;\">monero-wallet-cli:</p>" . $cli
+                                           . "</details>";
+                                }
+
+                                $body .= "</details>";
                             }
                             $active_err = card('success', ' successborder', 'Transaction Status', $body);
                         } elseif ($transfer === null) {

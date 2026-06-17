@@ -249,7 +249,9 @@ the dashboard's `NETWORK` / `RPC_*` env per node. Then point each faucet's
 `status_<net>` key in `config.php` at `/status/<slug>` so the faucet's `Network:`
 line links to it. The dashboard already shows only a peer *count* (no IPs);
 uncomment `SHOW_NODE_INFO=false` in `status/index.php` to also hide the node
-version on a public deployment.
+version on a public deployment. `status/.htaccess` 404s direct access to
+`dashboard.php` and the cache files; that relies on mod_rewrite, so on a
+non-Apache stack reproduce the equivalent rule or keep them outside the web root.
 
 ## License
 
@@ -272,8 +274,9 @@ with this program. If not, see <https://www.gnu.org/licenses/>.
 If you run your own instance, change the operator-specific bits (they're
 hardcoded, not in config): the domain in the `canonical` / `og:` / `twitter:`
 meta and in `sitemap.xml` / `robots.txt`, the footer attribution, the operator
-and contact details in `legal.php`, and the PGP identity in `contact.php`,
-`SECURITY.md`, and `tech1k.txt`. Secrets, RPC creds, and donation details
+and contact details in `legal.php`, the PGP identity in `contact.php`,
+`SECURITY.md`, and `tech1k.txt`, and the explorer URLs in `faucets.php` (the XMR
+entries point at the reference deployment's explorers). Secrets, RPC creds, and donation details
 (address, OpenAlias, QR path) live in `config.php`; if you enable donations, add
 your own QR image (the operator one is gitignored).
 

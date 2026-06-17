@@ -22,14 +22,26 @@ $config  = is_file(__DIR__ . '/../config.php') ? require __DIR__ . '/../config.p
 // Map each catalog faucet to a status node, keyed by its URL slug.
 $nodes = [];
 foreach ($catalog as $key => $f) {
+    // Skip faucets switched off in config, matching the homepage and engines.
+    if (($config['enabled'][$key] ?? true) === false) {
+        continue;
+    }
     $slug = ltrim($f['href'] ?? '', '/');
     if ($slug === '') {
         continue;
     }
     if (($f['engine'] ?? '') === 'xmr') {
-        // monerod's RPC is the wallet-RPC port minus 7 (the faucet's convention);
-        // the daemon usually needs no auth.
-        $rpc_port = (int) $f['rpc_port'] - 7;
+        // monerod's RPC: honor a catalog daemon_url override (as the engine does),
+        // else the faucet's convention of the wallet-RPC port minus 7. A null
+        // daemon_url means there's no node to show, so skip it.
+        if (array_key_exists('daemon_url', $f)) {
+            if ($f['daemon_url'] === null) {
+                continue;
+            }
+            $rpc_port = (int) parse_url($f['daemon_url'], PHP_URL_PORT);
+        } else {
+            $rpc_port = (int) $f['rpc_port'] - 7;
+        }
         $rpc_user = '';
         $rpc_pass = '';
     } else {
@@ -107,7 +119,7 @@ if ($node !== '') {
                     <img src="<?php echo htmlspecialchars($n['icon'], ENT_QUOTES, 'UTF-8'); ?>" width="32px" style="margin-right: 8px;" alt="<?php echo htmlspecialchars($n['currency'], ENT_QUOTES, 'UTF-8'); ?>">
                     <div>
                         <a href="/status/<?php echo htmlspecialchars($slug, ENT_QUOTES, 'UTF-8'); ?>" style="text-decoration: none; font-size: 18px;"><?php echo htmlspecialchars($n['label'], ENT_QUOTES, 'UTF-8'); ?> Node</a><br>
-                        <small style="font-size: 15px;"><?php echo htmlspecialchars($n['currency'], ENT_QUOTES, 'UTF-8'); ?> &middot; view live status</small>
+                        <small style="font-size: 15px;"><?php echo htmlspecialchars($n['currency'], ENT_QUOTES, 'UTF-8'); ?></small>
                     </div>
                 </div>
 <?php } ?>
