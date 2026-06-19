@@ -102,7 +102,7 @@ if ($node !== '') {
         <meta name="theme-color" content="#14161b" media="(prefers-color-scheme: dark)">
         <meta name="theme-color" content="#f7f7f7" media="(prefers-color-scheme: light)">
         <link rel="canonical" href="https://cypherfaucet.com/status" />
-        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=14">
+        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=15">
     </head>
     <body>
         <?php include __DIR__ . '/../nav.php'; ?>

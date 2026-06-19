@@ -281,5 +281,5 @@ code, pre, .mono { font-family: var(--mono); }
 footer { margin-top: 40px; }
 footer hr { border: none; border-top: 1px solid var(--border); margin: 0 auto; }
 footer p { color: var(--muted); }
-footer a { color: var(--text); }
-footer a:hover { color: var(--text); text-decoration: underline; }
+footer a, footer a:visited { color: var(--accent); }
+footer a:hover { text-decoration: underline; }

@@ -45,7 +45,7 @@ $pool_url = $cfg['pool_url'] ?? '';
         <meta property="og:title" content="CypherFaucet">
         <meta property="og:site_name" content="CypherFaucet">
         <meta property="og:url" content="https://cypherfaucet.com">
-        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=14">
+        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=15">
     </head>
     <body>
 <?php $nav_current = 'home'; include __DIR__ . '/nav.php'; ?>
