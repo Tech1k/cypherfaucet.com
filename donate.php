@@ -45,7 +45,7 @@ $openalias_safe = htmlspecialchars($openalias, ENT_QUOTES, 'UTF-8');
         <meta name="theme-color" content="#14161b" media="(prefers-color-scheme: dark)">
         <meta name="theme-color" content="#f7f7f7" media="(prefers-color-scheme: light)">
         <link rel="canonical" href="https://cypherfaucet.com/donate" />
-        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=12">
+        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=13">
     </head>
     <body>
 <?php $nav_current = 'donate'; include __DIR__ . '/nav.php'; ?>
@@ -76,7 +76,7 @@ $openalias_safe = htmlspecialchars($openalias, ENT_QUOTES, 'UTF-8');
                 <div class="card-body">
                     <p><code class="mono"><?php echo $addr_safe; ?></code> <button type="button" class="copybtn" data-copy="<?php echo $addr_safe; ?>">Copy</button></p>
 <?php if ($coin['qr'] !== '') { ?>
-                    <p><img src="<?php echo $qr_safe; ?>" alt="<?php echo $coin['name']; ?> donation QR code" style="width: 180px; max-width: 100%; height: auto; margin-top: 8px;"></p>
+                    <p><span class="qr"><img src="<?php echo $qr_safe; ?>" alt="<?php echo $coin['name']; ?> donation QR code"></span></p>
 <?php } ?>
                 </div>
             </div>

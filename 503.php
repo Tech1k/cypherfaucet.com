@@ -25,7 +25,7 @@ header('Retry-After: 3600');
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="theme-color" content="#14161b" media="(prefers-color-scheme: dark)">
         <meta name="theme-color" content="#f7f7f7" media="(prefers-color-scheme: light)">
-        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=12">
+        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=13">
     </head>
     <body>
 <?php include __DIR__ . '/nav.php'; ?>

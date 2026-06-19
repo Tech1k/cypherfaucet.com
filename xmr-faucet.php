@@ -659,7 +659,7 @@ $height_display = "<span class=\"dot {$dot}\">&#9679;</span> " . $height_display
         <meta property="og:image:height" content="630">
         <meta name="twitter:card" content="summary_large_image">
         <meta name="twitter:image" content="https://cypherfaucet.com/assets/images/og-banner.png">
-        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=12">
+        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=13">
         <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
     </head>
     <body>
@@ -742,7 +742,7 @@ $height_display = "<span class=\"dot {$dot}\">&#9679;</span> " . $height_display
 <?php } ?>
                     <p><code class="mono"><?php echo $mainnet_safe; ?></code> <button type="button" class="copybtn" data-copy="<?php echo $mainnet_safe; ?>">Copy</button></p>
 <?php if ($mainnet_qr !== '') { ?>
-                    <p><img src="<?php echo $qr_safe; ?>" alt="Monero donation QR code" style="width: 180px; max-width: 100%; height: auto; margin-top: 8px;"></p>
+                    <p><span class="qr"><img src="<?php echo $qr_safe; ?>" alt="Monero donation QR code"></span></p>
 <?php } ?>
                     <p style="margin-top: 8px;">See every way to support the faucet on the <a href="/donate" class="site_link">donations page</a>.</p>
 <?php } ?>

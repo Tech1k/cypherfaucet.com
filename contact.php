@@ -26,7 +26,7 @@ $source_url = $cfg['source_url'] ?? 'https://github.com/Tech1k/cypherfaucet';
         <meta property="og:title" content="CypherFaucet | Contact">
         <meta property="og:site_name" content="CypherFaucet">
         <meta property="og:url" content="https://cypherfaucet.com/contact">
-        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=12">
+        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=13">
 	</head>
 	<body>
 <?php $nav_current = 'contact'; include __DIR__ . '/nav.php'; ?>

@@ -2,16 +2,17 @@
 
 A small, focused dev-net faucet. Developers enter a testnet/stagenet address,
 complete a captcha, and receive a fixed payout on a rate limit. It serves
-Monero (**stagenet** and **testnet**) and Litecoin (**testnet**), runs at
-[cypherfaucet.com](https://cypherfaucet.com), and is listed on getmonero.org.
+Monero (**stagenet** and **testnet**), Litecoin (**testnet**), and Bitcoin
+(**testnet4**), runs at [cypherfaucet.com](https://cypherfaucet.com), and is
+listed on getmonero.org.
 
 Two engines share one database, design, and rate-limit logic, with the active
 network chosen by the URL via `.htaccess`:
 
 - [xmr-faucet.php](xmr-faucet.php) for Monero, both nets selected by `?net=`.
 - [core-faucet.php](core-faucet.php) for Bitcoin Core-family coins, selected by
-  `?coin=` (Litecoin testnet today; Bitcoin testnet ready behind one config
-  entry, no new code).
+  `?coin=` (Litecoin testnet and Bitcoin testnet4; more are one catalog entry
+  away, no new code).
 
 ## Features
 
@@ -22,9 +23,8 @@ network chosen by the URL via `.htaccess`:
     on each receipt (a `get_tx_proof` signature that verifies in the Monero
     GUI's Prove/Check or CLI) for when the dev-net explorers are down.
   - **Bitcoin Core-family** ([core-faucet.php](core-faucet.php)): Litecoin
-    testnet today (tLTC), Bitcoin testnet ready behind one config entry. Talks
-    to a Bitcoin Core JSON-RPC and links each receipt's txid to a block
-    explorer.
+    testnet (tLTC) and Bitcoin testnet4 (tBTC). Talks to a Bitcoin Core
+    JSON-RPC and links each receipt's txid to a block explorer.
 - Each coin/net defined as a config map entry, not duplicated code.
 - Cloudflare Turnstile captcha.
 - Per-address and per-IP rate limiting, serialized with `BEGIN IMMEDIATE` so
@@ -42,6 +42,8 @@ network chosen by the URL via `.htaccess`:
   and testnet), bound to `127.0.0.1`.
 - For Litecoin: a `litecoind` on testnet (`-testnet`) with `server=1` and its
   RPC bound to `127.0.0.1` (default port `19332`), holding spendable tLTC.
+- For Bitcoin: a `bitcoind` on testnet4 (`-testnet4`) with `server=1` and its
+  RPC bound to `127.0.0.1` (default port `48332`), holding spendable tBTC.
 - SQLite 3.24+ (for the `ON CONFLICT` upsert used by the stats counter).
 
 ## Setup
@@ -52,8 +54,9 @@ network chosen by the URL via `.htaccess`:
    ```
    Set your Turnstile sitekey/secret, the Monero wallet RPC credentials (or
    leave blank if the wallet uses `--disable-rpc-login` on localhost), the
-   Litecoin `ltc_rpc_user` / `ltc_rpc_pass`, and your public `source_url`.
-   `config.php` is gitignored; never commit it.
+   Litecoin (`ltc_rpc_user` / `ltc_rpc_pass`) and Bitcoin (`btc_rpc_user` /
+   `btc_rpc_pass`) RPC credentials, and your public `source_url`. `config.php`
+   is gitignored; never commit it.
 
 2. **Database.** Create the SQLite file and tables:
    ```sh
@@ -77,10 +80,14 @@ network chosen by the URL via `.htaccess`:
      `rpcuser` / `rpcpassword` matching `config.php`, RPC bound to `127.0.0.1`
      (port `19332`). Ports and the explorer link live in
      [faucets.php](faucets.php).
+   - **Bitcoin:** run `bitcoind -testnet4` with `server=1` and
+     `rpcuser` / `rpcpassword` matching `config.php`, RPC bound to `127.0.0.1`
+     (port `48332`). Ports and the explorer link live in
+     [faucets.php](faucets.php).
 
 4. **Web server.** Serve the directory with Apache + `mod_rewrite`. The
-   `.htaccess` maps `/xmr-stagenet`, `/xmr-testnet`, and `/ltc-testnet` to the
-   apps and denies web access to `db/`.
+   `.htaccess` maps `/xmr-stagenet`, `/xmr-testnet`, `/ltc-testnet`, and
+   `/btc-testnet` to the apps and denies web access to `db/`.
 
 5. **Retention cron.** Prune old claim rows (PII) daily:
    ```cron
@@ -171,12 +178,12 @@ shared catalog [faucets.php](faucets.php). To add one:
    the currency, payout, claim window, RPC port, table, address hint, explorer
    URL, and the homepage card fields.
 2. Add the matching pretty-URL rewrite in `.htaccess`
-   (e.g. `^btc-testnet/?$ core-faucet.php?coin=btc`).
-3. Add its payout table (e.g. `tbtc_payouts`) and IP index to
+   (e.g. `^doge-testnet/?$ core-faucet.php?coin=doge`).
+3. Add its payout table (e.g. `tdoge_payouts`) and IP index to
    [db/create_db.py](db/create_db.py), and the table name to
    [db/cleanup.php](db/cleanup.php).
 4. Set `<coin>_rpc_user` / `<coin>_rpc_pass` (and optionally `donate_t<coin>`)
-   in `config.php`, and run the daemon (e.g. `bitcoind -testnet`).
+   in `config.php`, and run the daemon (e.g. `dogecoind -testnet`).
 
 ## Security notes
 
@@ -277,7 +284,8 @@ meta and in `sitemap.xml` / `robots.txt`, the footer attribution, the operator
 and contact details in `legal.php`, the PGP identity in `contact.php`,
 `SECURITY.md`, and `tech1k.txt`, and the explorer URLs in `faucets.php` (the XMR
 entries point at the reference deployment's explorers). Secrets, RPC creds, and donation details
-(address, OpenAlias, QR path) live in `config.php`; if you enable donations, add
-your own QR image (the operator one is gitignored).
+(address, OpenAlias, QR path) live in `config.php`; if you enable donations,
+replace the committed `assets/images/*-qr.png` with your own (the shipped ones
+encode the operator's addresses).
 
 Issues and pull requests are welcome.

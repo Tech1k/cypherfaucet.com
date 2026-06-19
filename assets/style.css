@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: AGPL-3.0-or-later */
+/* Copyright (C) 2025-2026 Tech1k */
 /* Faucet stylesheet. Token-driven so the design stays consistent and easy to
    reskin. Values are generic and fork-neutral: no operator specifics live in
    here. Dark by default; light auto-applies for visitors whose OS prefers it
@@ -263,9 +265,21 @@ code, pre, .mono { font-family: var(--mono); }
 .dot-warn { color: var(--warn); }
 .dot-off { color: var(--muted); }
 
+/* ---- QR swatch (donation codes; white so they scan in both themes) ----- */
+.qr {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 10px;
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    line-height: 0;
+}
+.qr img { display: block; width: 180px; max-width: 100%; height: auto; }
+
 /* ---- Footer ------------------------------------------------------------ */
 footer { margin-top: 40px; }
 footer hr { border: none; border-top: 1px solid var(--border); margin: 0 auto; }
 footer p { color: var(--muted); }
-footer a { color: var(--muted); }
-footer a:hover { color: var(--text); }
+footer a { color: var(--text); }
+footer a:hover { color: var(--text); text-decoration: underline; }
