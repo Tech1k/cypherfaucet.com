@@ -42,33 +42,17 @@ $openalias_safe = htmlspecialchars($openalias, ENT_QUOTES, 'UTF-8');
         <meta name="description" content="Support CypherFaucet with an optional mainnet donation. These testnet faucets are free; I run them to give back.">
         <meta name="robots" content="index, follow">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <meta name="theme-color" content="#c5c5c5">
+        <meta name="theme-color" content="#14161b" media="(prefers-color-scheme: dark)">
+        <meta name="theme-color" content="#f7f7f7" media="(prefers-color-scheme: light)">
         <link rel="canonical" href="https://cypherfaucet.com/donate" />
-        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=10">
-        <style>
-            strong { color: #d4d4d4; }
-            .mono { font-family: monospace; word-break: break-word; }
-            .copybtn {
-                font-size: 12px;
-                padding: 3px 10px;
-                margin-left: 6px;
-                cursor: pointer;
-                vertical-align: middle;
-                color: #d4d4d4;
-                background-color: transparent;
-                border: 1px solid #5b6168;
-                border-radius: 4px;
-                transition: background-color 0.15s ease, border-color 0.15s ease;
-            }
-            .copybtn:hover { background-color: #3a3f44; border-color: #7a8189; }
-        </style>
+        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=12">
     </head>
     <body>
 <?php $nav_current = 'donate'; include __DIR__ . '/nav.php'; ?>
         <br/>
         <div id="main">
             <span class="title is-size-3 has-icon" style="margin-bottom: 0em !important;">
-                <span style="font-size: 28px; color: #e1e1e1;"><b>Support the Faucet</b></span>
+                <span style="font-size: 28px; color: var(--text);"><b>Support the Faucet</b></span>
             </span>
             <br/>
             <span>These faucets are free and I run them to give back. If they've saved you time and you'd like to help with server costs, a <b>mainnet</b> donation is welcome and entirely optional. Thank you!</span>

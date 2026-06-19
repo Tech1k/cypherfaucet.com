@@ -469,16 +469,16 @@ try {
 // Liveness / sync line, with a status dot.
 $node = get_core_status($rpcUrl, $rpcUser, $rpcPass, $coin, dirname($dbFile));
 if ($node === null) {
-    $dot = '#888';            // gray: daemon unreachable
+    $dot = 'dot-off';         // gray: daemon unreachable
     $height_display = 'Unavailable';
 } elseif ($node['synced']) {
-    $dot = '#3fb950';         // green: synced
+    $dot = 'dot-ok';          // green: synced
     $height_display = 'Synced, block ' . number_format($node['height']);
 } else {
-    $dot = '#d29922';         // amber: catching up
+    $dot = 'dot-warn';        // amber: catching up
     $height_display = 'Syncing, block ' . number_format($node['height']);
 }
-$height_display = "<span style=\"color: {$dot};\">&#9679;</span> " . $height_display;
+$height_display = "<span class=\"dot {$dot}\">&#9679;</span> " . $height_display;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -491,7 +491,8 @@ $height_display = "<span style=\"color: {$dot};\">&#9679;</span> " . $height_dis
         <meta name="description" content="Developer friendly <?php echo $net_label; ?> faucet. Free <?php echo strtolower($net_label); ?> coins for testing applications.">
         <meta name="robots" content="index, follow">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <meta name="theme-color" content="#c5c5c5">
+        <meta name="theme-color" content="#14161b" media="(prefers-color-scheme: dark)">
+        <meta name="theme-color" content="#f7f7f7" media="(prefers-color-scheme: light)">
         <link rel="canonical" href="https://cypherfaucet.com<?php echo $canonical; ?>" />
         <meta property="og:type" content="website">
         <meta property="og:site_name" content="CypherFaucet">
@@ -503,34 +504,8 @@ $height_display = "<span style=\"color: {$dot};\">&#9679;</span> " . $height_dis
         <meta property="og:image:height" content="630">
         <meta name="twitter:card" content="summary_large_image">
         <meta name="twitter:image" content="https://cypherfaucet.com/assets/images/og-banner.png">
-        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=10">
+        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=12">
         <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-
-        <style>
-            .card-body strong {
-                color: #d4d4d4;
-            }
-            .mono {
-                font-family: monospace;
-                word-break: break-word;
-            }
-            .copybtn {
-                font-size: 12px;
-                padding: 3px 10px;
-                margin-left: 6px;
-                cursor: pointer;
-                vertical-align: middle;
-                color: #d4d4d4;
-                background-color: transparent;
-                border: 1px solid #5b6168;
-                border-radius: 4px;
-                transition: background-color 0.15s ease, border-color 0.15s ease;
-            }
-            .copybtn:hover {
-                background-color: #3a3f44;
-                border-color: #7a8189;
-            }
-        </style>
     </head>
     <body>
 <?php include __DIR__ . '/nav.php'; ?>
@@ -538,7 +513,7 @@ $height_display = "<span style=\"color: {$dot};\">&#9679;</span> " . $height_dis
         <div id="main">
             <span class="title is-size-3 has-icon" style="margin-bottom: 0em !important;">
                 <img class="lozad" src="<?php echo $coin_icon; ?>" alt="<?php echo $net_label; ?>" data-loaded="true" style="height: 28px; display: inline-block; padding-right: 5px;">
-                <span style="font-size: 28px; color: #e1e1e1;"><b><?php echo $net_label; ?> Faucet</b></span>
+                <span style="font-size: 28px; color: var(--text);"><b><?php echo $net_label; ?> Faucet</b></span>
             </span>
             <br/>
             <span style="font-size: 18px;"><b>Receive <?php echo $payout_amount; ?> <?php echo $currency; ?> <?php echo $claim_text; ?>.</b></span>
@@ -552,7 +527,7 @@ $height_display = "<span style=\"color: {$dot};\">&#9679;</span> " . $height_dis
                     <span>Total Sent: <strong><?php echo $total_sent; ?></strong> <?php echo $currency; ?></span><br/>
                     <span>Total Payouts: <strong><?php echo $total_payouts; ?></strong></span><br/>
 <?php if ($last_payout !== '') { ?>                    <span>Last payout: <strong><?php echo $last_payout; ?></strong></span><br/>
-<?php } ?>                    <span>Network: <strong><?php echo $height_display; ?></strong><?php if ($status_url !== '') { ?> &middot; <a href="<?php echo htmlspecialchars($status_url, ENT_QUOTES, 'UTF-8'); ?>" target="_blank" rel="noopener" class="site_link">node dashboard</a><?php } ?></span>
+<?php } ?>                    <span>Network: <span class="badge"><?php echo $height_display; ?></span><?php if ($status_url !== '') { ?> &middot; <a href="<?php echo htmlspecialchars($status_url, ENT_QUOTES, 'UTF-8'); ?>" target="_blank" rel="noopener" class="site_link">node dashboard</a><?php } ?></span>
                 </div>
             </div>
 
@@ -570,7 +545,7 @@ $height_display = "<span style=\"color: {$dot};\">&#9679;</span> " . $height_dis
                                 </span>
                             </div>
                             <span style="display: inline-block; margin-top: 8px; font-size: 0.9em;">IP addresses are logged only to prevent faucet abuse.</span>
-                            <div class="cf-turnstile" style="margin-top: 12px; margin-bottom: 12px;" data-sitekey="<?php echo TURNSTILE_SITEKEY; ?>" data-theme="dark"></div>
+                            <div class="cf-turnstile" style="margin-top: 12px; margin-bottom: 12px;" data-sitekey="<?php echo TURNSTILE_SITEKEY; ?>" data-theme="auto"></div>
                             <input type="submit" id="send" name="claim" class="formbtn" value="Send <?php echo $currency; ?>" />
                         </form>
                     </div>

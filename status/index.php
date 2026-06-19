@@ -99,16 +99,17 @@ if ($node !== '') {
         <meta name="description" content="Live status of the nodes powering the CypherFaucet testnet faucets.">
         <meta name="robots" content="index, follow">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <meta name="theme-color" content="#c5c5c5">
+        <meta name="theme-color" content="#14161b" media="(prefers-color-scheme: dark)">
+        <meta name="theme-color" content="#f7f7f7" media="(prefers-color-scheme: light)">
         <link rel="canonical" href="https://cypherfaucet.com/status" />
-        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=10">
+        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=12">
     </head>
     <body>
         <?php include __DIR__ . '/../nav.php'; ?>
         <br/>
         <div id="main">
             <span class="title is-size-3 has-icon" style="margin-bottom: 0em !important;">
-                <span style="font-size: 28px; color: #e1e1e1;"><b>Node Status</b></span>
+                <span style="font-size: 28px; color: var(--text);"><b>Node Status</b></span>
             </span>
             <br/>
             <span>Live status of the nodes powering the faucets.</span>

@@ -33,7 +33,8 @@ $pool_url = $cfg['pool_url'] ?? '';
         <meta name="description" content="Free Monero, Litecoin, and Bitcoin testnet coins for developers testing applications.">
         <meta name="robots" content="index, follow">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <meta name="theme-color" content="#c5c5c5">
+        <meta name="theme-color" content="#14161b" media="(prefers-color-scheme: dark)">
+        <meta name="theme-color" content="#f7f7f7" media="(prefers-color-scheme: light)">
         <link rel="canonical" href="https://cypherfaucet.com" />
         <meta property="og:image" content="https://cypherfaucet.com/assets/images/og-banner.png">
         <meta property="og:image:width" content="1200">
@@ -44,7 +45,7 @@ $pool_url = $cfg['pool_url'] ?? '';
         <meta property="og:title" content="CypherFaucet">
         <meta property="og:site_name" content="CypherFaucet">
         <meta property="og:url" content="https://cypherfaucet.com">
-        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=10">
+        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=12">
     </head>
     <body>
 <?php $nav_current = 'home'; include __DIR__ . '/nav.php'; ?>

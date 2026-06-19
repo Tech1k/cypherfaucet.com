@@ -15,8 +15,9 @@ http_response_code(404);
         <link rel="shortcut icon" href="/assets/images/favicon.png" type="image/png" />
         <meta name="robots" content="noindex, follow">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <meta name="theme-color" content="#c5c5c5">
-        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=10">
+        <meta name="theme-color" content="#14161b" media="(prefers-color-scheme: dark)">
+        <meta name="theme-color" content="#f7f7f7" media="(prefers-color-scheme: light)">
+        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=12">
     </head>
     <body>
 <?php include __DIR__ . '/nav.php'; ?>

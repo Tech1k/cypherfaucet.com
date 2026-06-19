@@ -1,252 +1,271 @@
-  body {
-      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
-      color: whitesmoke;
-      background: #333333;
-  }
-  
-  a {
-      color: lightblue;
-  }
-  
-  a:visited {
-      color: lightblue;
-  }
-  
-  #main {
-      margin: auto;
-      width: 65%;
-  }
-  
-  #navlink {
-      margin-right: 10px;
-      font-size: 18px;
-  }
-  
-  @media (max-width: 992px) {
-      #main {
-          width: 90%;
-      }
-      #navlink {
-          margin-right: auto;
-      }
-  }
-  
-  /* Navbar styling */
-  .navbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 20px;
-      width: 65%;
-      margin: 0 auto;
-  }
-  
-  .navbar a {
-      text-decoration: none;
-      font-weight: bold;
-      margin: 0 5px;
-  }
-  
-  .navbar img {
-      max-height: 40px;
-  }
-  
-  /* The css hamburger menu! */
-  .menu-toggle {
-      display: none;
-  }
-  
-  /* The beloved hamburger icon...in css! */
-  .hamburger {
-      display: none;
-      flex-direction: column;
-      cursor: pointer;
-      gap: 5px;
-  }
-  
-  .hamburger div {
-      width: 25px;
-      height: 3px;
-      background-color: white;
-  }
-  
-  .nav-links {
-      display: flex;
-      gap: 15px;
-      align-items: center;
-  }
-  
-  #curpage {
-      color: #4d9fe0 !important;
-      text-decoration: underline;
-  }
-  
-  /* Full/desktop viewport */
-  @media (min-width: 1092px) {
-      .navbar {
-          flex-direction: row;
-          justify-content: space-between;
-      }
-  
-      .navbar-content {
-          width: 75%;
-          margin: 0 auto;
-      }
-  
-      .nav-links {
-          display: flex;
-          gap: 15px;
-          align-items: center;
-      }
-  }
-  
-  /* Medium/tablet viewport */
-  @media (max-width: 1091px) and (min-width: 621px) {
-      .navbar {
-          flex-direction: column;
-          align-items: center;
-      }
-  
-      .navbar-content {
-          width: 75%;
-          margin: 0 auto;
-      }
-  
-      .nav-links {
-          display: flex;
-          gap: 15px;
-          flex-direction: row;
-          margin-top: 10px;
-          align-items: center;
-      }
-  
-      .hamburger {
-          display: none;
-      }
-  }
-  
-  /* Mobile viewport */
-  @media (max-width: 620px) {
-      .navbar {
-          flex-direction: row;
-          align-items: center;
-          justify-content: space-between;
-          width: 90%;
-      }
-  
-      .navbar a {
-          margin: 10px 0;
-      }
-  
-      .hamburger {
-          display: flex;
-          margin-left: 10px;
-      }
-  
-      .nav-links {
-          display: none;
-          flex-direction: column;
-          width: 100%;
-          align-items: center;
-          margin-top: 10px;
-          padding: 0;
-      }
-  
-      .menu-toggle:checked + .hamburger + .nav-links {
-          display: flex;
-      }
-  
-      .navbar a {
-          font-size: 14px;
-      }
-  }
-  
+/* Faucet stylesheet. Token-driven so the design stays consistent and easy to
+   reskin. Values are generic and fork-neutral: no operator specifics live in
+   here. Dark by default; light auto-applies for visitors whose OS prefers it
+   (prefers-color-scheme), no JS toggle. */
 
-  .card {
-    border-radius: 6px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    overflow: hidden; /* Ensures inner elements stay within rounded corners */
-    margin: 20px 0;
+:root {
+    color-scheme: dark;
+
+    --bg:        #14161b;
+    --surface:   #232730;
+    --card:      #1c1f27;
+    --border:    #2a2e37;
+    --border2:   #353b46;
+    --text:      #e6e8ec;
+    --muted:     #9aa0ab;
+
+    --accent:     #6b86ff;
+    --accent-soft:#9db2ff;
+    --accent-bg:  rgba(107, 134, 255, 0.13);
+    --btn:        #5066d6;
+    --on-accent:  #ffffff;
+
+    --ok:   #4fbf75; --ok-bg:   rgba(79, 191, 117, 0.13);
+    --bad:  #ef6b6b; --bad-bg:  rgba(239, 107, 107, 0.13);
+    --warn: #e0894f; --warn-bg: rgba(224, 137, 79, 0.13);
+
+    --nav-bg: rgba(20, 22, 27, 0.86);
+
+    --font: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    --mono: ui-monospace, 'SF Mono', 'JetBrains Mono', 'DejaVu Sans Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+
+    --r: 10px;
+    --r-sm: 7px;
+    --pill: 999px;
+    --maxw: 760px;
+}
+
+@media (prefers-color-scheme: light) {
+    :root {
+        color-scheme: light;
+
+        --bg:        #f7f7f7;
+        --surface:   #f4f5f7;
+        --card:      #ffffff;
+        --border:    #e5e5e5;
+        --border2:   #d8dbe0;
+        --text:      #1b1d23;
+        --muted:     #6b6b6b;
+
+        --accent:     #4561eb;
+        --accent-soft:#2f49c9;
+        --accent-bg:  rgba(69, 97, 235, 0.10);
+        --btn:        #3f57e0;
+
+        --ok:   #1f6b38; --ok-bg:   rgba(31, 107, 56, 0.12);
+        --bad:  #b52a2a; --bad-bg:  rgba(181, 42, 42, 0.10);
+        --warn: #a04a25; --warn-bg: rgba(160, 74, 37, 0.10);
+
+        --nav-bg: rgba(255, 255, 255, 0.85);
+    }
+}
+
+/* ---- Base -------------------------------------------------------------- */
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    font-variant-numeric: tabular-nums;
+    -webkit-font-smoothing: antialiased;
+}
+
+a, a:visited { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.site_link { color: var(--accent); }
+.site_link:hover { text-decoration: underline; }
+
+code, pre, .mono { font-family: var(--mono); }
+.mono { word-break: break-word; }
+
+/* ---- Layout ------------------------------------------------------------ */
+#main {
+    width: 90%;
+    max-width: var(--maxw);
+    margin: 24px auto 64px;
+}
+
+/* ---- Nav (frosted, sticky, full-bleed; content capped to --maxw) ------- */
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
     width: 100%;
-    border: 1px solid #52575c;
-  }
-  
-  .success {
-      background-color: #047048!important;
-  }
-  
-  .successborder {
-      border: 1px solid #04AA6D;
-  }
-  
-  .alert {
-      background-color: #c62828!important;
-  }
-  
-  .alertborder {
-      border: 1px solid #f44336;
-  }
-  
-  .card-header {
-    background-color: #5b5b5b;
-    padding: 14px 18px;
-    font-weight: bold;
-    font-size: 1.1em;
-  }
-  
-  .card-body {
-    padding: 16px 18px;
-  }
-  
-  .forminput-wrapper {
-      position: relative;
-      display: inline-block;
-      width: 100%;
-      font-size: 0.875rem;
-  }
-  
-  .forminput {
-      width: 100%;
-      /*padding: 0.5em 0.75em 0.5em 2.25em;*/
-      padding: 0.75em 0.75em 0.75em 2.25em;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      background-color: #ffffff !important;
-      color: #111111;
-      font-size: inherit;
-      box-sizing: border-box;
-  }
-  
-  .icon-left {
-      position: absolute;
-      left: 0.5em;
-      top: 50%;
-      transform: translateY(-50%);
-      height: 1.5em;
-      width: 1.5em;
-      pointer-events: none;
-  }
-  
-  .icon-left img {
-      height: 100%;
-      width: auto;
-      display: block;
-  }
-  
-  .formbtn {
-      background-color: #0f5ea4;
-      border: 1px solid #0f5ea4;
-      color: #ffffff;
-      width: 100%;
-      padding: 0.85em 1em;
-      font-size: 1.05rem;
-      font-weight: bold;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background-color 0.2s ease, border-color 0.2s ease;
-  }
+    margin: 0;
+    padding: 12px max(20px, calc((100% - var(--maxw)) / 2));
+    background: var(--nav-bg);
+    -webkit-backdrop-filter: saturate(140%) blur(10px);
+    backdrop-filter: saturate(140%) blur(10px);
+    border-bottom: 1px solid var(--border);
+}
 
-  .formbtn:hover {
-      background-color: #0c4f8a;
-      border-color: #0c4f8a;
-  }
+.navbar a { text-decoration: none; font-weight: 600; }
+.navbar img { max-height: 38px; display: block; }
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.nav-links a {
+    color: var(--muted);
+    font-size: 15px;
+    padding: 6px 10px;
+    border-radius: var(--r-sm);
+}
+.nav-links a:hover { color: var(--text); text-decoration: none; }
+
+#curpage {
+    color: var(--accent) !important;
+    background: var(--accent-bg);
+}
+
+/* CSS-only hamburger (mobile) */
+.menu-toggle { display: none; }
+.hamburger { display: none; flex-direction: column; cursor: pointer; gap: 5px; }
+.hamburger div { width: 25px; height: 3px; background: var(--text); border-radius: 2px; }
+
+@media (max-width: 620px) {
+    .hamburger { display: flex; }
+    .nav-links {
+        display: none;
+        width: 100%;
+        flex-direction: column;
+        align-items: flex-start;
+        margin-top: 6px;
+    }
+    .nav-links a { width: 100%; }
+    .menu-toggle:checked + .hamburger + .nav-links { display: flex; }
+}
+
+/* ---- Cards ------------------------------------------------------------- */
+.card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    overflow: hidden;
+    margin: 16px 0;
+    width: 100%;
+}
+
+.card-header {
+    background: var(--surface);
+    padding: 13px 18px;
+    font-weight: 700;
+    font-size: 1em;
+    border-bottom: 1px solid var(--border);
+}
+
+.card-body { padding: 16px 18px; }
+
+/* Status cards: soft tinted header + matching border, via the role tokens.
+   .success / .alert land on the card-header; the *border classes on the card. */
+.success { background: var(--ok-bg) !important; color: var(--ok); border-bottom-color: var(--ok); }
+.successborder { border-color: var(--ok); }
+.alert { background: var(--bad-bg) !important; color: var(--bad); border-bottom-color: var(--bad); }
+.alertborder { border-color: var(--bad); }
+
+/* ---- Forms ------------------------------------------------------------- */
+.forminput-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    font-size: 0.875rem;
+}
+
+.forminput {
+    width: 100%;
+    padding: 0.7em 0.75em 0.7em 2.4em;
+    border: 1px solid var(--border2);
+    border-radius: var(--r-sm);
+    background: var(--surface);
+    color: var(--text);
+    font-family: inherit;
+    font-size: inherit;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.forminput::placeholder { color: var(--muted); }
+.forminput:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-bg);
+}
+
+.icon-left {
+    position: absolute;
+    left: 0.6em;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 1.5em;
+    width: 1.5em;
+    pointer-events: none;
+}
+.icon-left img { height: 100%; width: auto; display: block; }
+
+.formbtn {
+    width: 100%;
+    padding: 0.7em 1em;
+    background: var(--btn);
+    border: 1px solid var(--btn);
+    color: var(--on-accent);
+    font-family: inherit;
+    font-size: 1.02rem;
+    font-weight: 600;
+    border-radius: var(--pill);
+    cursor: pointer;
+    transition: filter 0.15s ease;
+}
+.formbtn:hover { filter: brightness(1.08); }
+.formbtn:disabled { opacity: 0.5; cursor: default; }
+
+/* ---- Copy buttons (used inline throughout for addresses, txids, etc.) --- */
+.copybtn {
+    font-size: 12px;
+    padding: 3px 10px;
+    margin-left: 6px;
+    vertical-align: middle;
+    cursor: pointer;
+    color: var(--text);
+    background: transparent;
+    border: 1px solid var(--border2);
+    border-radius: var(--pill);
+    font-family: inherit;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+.copybtn:hover { background: var(--accent-bg); border-color: var(--accent); }
+
+/* ---- Status badge + dots (node sync line) ------------------------------ */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 2px 10px;
+    border-radius: var(--pill);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    font-size: 0.9em;
+    font-weight: 600;
+}
+
+.dot { font-size: 0.85em; line-height: 1; }
+.dot-ok { color: var(--ok); }
+.dot-warn { color: var(--warn); }
+.dot-off { color: var(--muted); }
+
+/* ---- Footer ------------------------------------------------------------ */
+footer { margin-top: 40px; }
+footer hr { border: none; border-top: 1px solid var(--border); margin: 0 auto; }
+footer p { color: var(--muted); }
+footer a { color: var(--muted); }
+footer a:hover { color: var(--text); }

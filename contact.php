@@ -14,7 +14,8 @@ $source_url = $cfg['source_url'] ?? 'https://github.com/Tech1k/cypherfaucet';
         <meta name="description" content="Feel free to reach out if you have any inquires.">
         <meta name="robots" content="index, follow">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <meta name="theme-color" content="#c5c5c5">
+        <meta name="theme-color" content="#14161b" media="(prefers-color-scheme: dark)">
+        <meta name="theme-color" content="#f7f7f7" media="(prefers-color-scheme: light)">
         <link rel="canonical" href="https://cypherfaucet.com/contact" />
         <meta property="og:image" content="https://cypherfaucet.com/assets/images/og-banner.png">
         <meta property="og:image:width" content="1200">
@@ -25,7 +26,7 @@ $source_url = $cfg['source_url'] ?? 'https://github.com/Tech1k/cypherfaucet';
         <meta property="og:title" content="CypherFaucet | Contact">
         <meta property="og:site_name" content="CypherFaucet">
         <meta property="og:url" content="https://cypherfaucet.com/contact">
-        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=10">
+        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=12">
 	</head>
 	<body>
 <?php $nav_current = 'contact'; include __DIR__ . '/nav.php'; ?>
