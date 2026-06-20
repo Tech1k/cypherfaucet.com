@@ -659,7 +659,7 @@ $height_display = "<span class=\"dot {$dot}\">&#9679;</span> " . $height_display
         <meta property="og:image:height" content="630">
         <meta name="twitter:card" content="summary_large_image">
         <meta name="twitter:image" content="https://cypherfaucet.com/assets/images/og-banner.png">
-        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=15">
+        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=16">
         <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
     </head>
     <body>

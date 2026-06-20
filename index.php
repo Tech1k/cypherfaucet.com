@@ -20,6 +20,7 @@ $has_donations = ($cfg['mainnet_openalias'] ?? '') !== ''
 
 // Optional cross-link to a companion testnet mining pool (blank hides it).
 $pool_url = $cfg['pool_url'] ?? '';
+$wallet_url = $cfg['wallet_url'] ?? '';
 ?>
 <!-- SPDX-License-Identifier: AGPL-3.0-or-later  |  Copyright (C) 2025-2026 Tech1k -->
 <!DOCTYPE html>
@@ -28,8 +29,8 @@ $pool_url = $cfg['pool_url'] ?? '';
         <title>CypherFaucet | Monero, Litecoin &amp; Bitcoin Testnet Faucets</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="icon" href="/assets/images/favicon.png" type="image/png" />
-        <link rel="shortcut icon" href="/assets/images/favicon.png" type="image/png" />
+        <link rel="icon" href="/assets/images/favicon.png?v=2" type="image/png" />
+        <link rel="shortcut icon" href="/assets/images/favicon.png?v=2" type="image/png" />
         <meta name="description" content="Free Monero, Litecoin, and Bitcoin testnet coins for developers testing applications.">
         <meta name="robots" content="index, follow">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -45,7 +46,7 @@ $pool_url = $cfg['pool_url'] ?? '';
         <meta property="og:title" content="CypherFaucet">
         <meta property="og:site_name" content="CypherFaucet">
         <meta property="og:url" content="https://cypherfaucet.com">
-        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=15">
+        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=16">
     </head>
     <body>
 <?php $nav_current = 'home'; include __DIR__ . '/nav.php'; ?>
@@ -54,7 +55,7 @@ $pool_url = $cfg['pool_url'] ?? '';
 
         <div id="main">
             <p align="center">
-                <img src="/assets/images/cypherfaucet-icon.png" height="128px" alt="CypherFaucet Icon">
+                <img src="/assets/images/cypherfaucet-icon.png?v=2" height="128px" alt="CypherFaucet Icon">
                 <br/>
                 <span style="font-size: 48px;"><strong>CypherFaucet</strong></span>
                 <br/>
@@ -76,11 +77,14 @@ $pool_url = $cfg['pool_url'] ?? '';
                 </div>
 <?php } ?>
             </div>
+<?php if ($wallet_url !== '') { ?>
+            <p align="center" style="margin-top: 28px;">Need a Bitcoin or Litecoin testnet wallet? Try <a href="<?php echo htmlspecialchars($wallet_url, ENT_QUOTES, 'UTF-8'); ?>" target="_blank" rel="noopener" class="site_link">testnetwallet.net</a>.</p>
+<?php } ?>
 <?php if ($pool_url !== '') { ?>
-            <p align="center" style="margin-top: 28px;">Want to mine testnet coins too? Try our <a href="<?php echo htmlspecialchars($pool_url, ENT_QUOTES, 'UTF-8'); ?>" target="_blank" rel="noopener" class="site_link">testnet pool</a>.</p>
+            <p align="center" style="margin-top: <?php echo $wallet_url !== '' ? '8' : '28'; ?>px;">Want to mine testnet coins too? Try our <a href="<?php echo htmlspecialchars($pool_url, ENT_QUOTES, 'UTF-8'); ?>" target="_blank" rel="noopener" class="site_link">testnet pool</a>.</p>
 <?php } ?>
 <?php if ($has_donations) { ?>
-            <p align="center" style="margin-top: <?php echo $pool_url !== '' ? '8' : '28'; ?>px;"><a href="/donate" class="site_link">Support the faucet</a></p>
+            <p align="center" style="margin-top: <?php echo ($wallet_url !== '' || $pool_url !== '') ? '8' : '28'; ?>px;"><a href="/donate" class="site_link">Support the faucet</a></p>
 <?php } ?>
             <br/><br/><br/><br/><br/>
 <?php include __DIR__ . '/footer.php'; ?>

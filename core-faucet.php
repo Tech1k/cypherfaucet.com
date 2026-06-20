@@ -62,6 +62,10 @@ $donate_safe = htmlspecialchars($donate_addr, ENT_QUOTES, 'UTF-8'); // display; 
 // When set, the "Network:" line links to it; blank hides the link.
 $status_url = $config["status_{$coin}"] ?? '';
 
+// Optional companion testnet wallet (testnetwallet.net). When set, a "get an
+// address" hint shows under the claim input. The wallet supports BTC and LTC.
+$wallet_url = $config['wallet_url'] ?? '';
+
 // Optional mainnet "support the faucet" address for this coin (mainnet_ltc /
 // mainnet_btc) plus an optional QR, and a shared OpenAlias handle that resolves
 // per coin. Empty by default so the public code asks for nothing; set in
@@ -509,7 +513,7 @@ $height_display = "<span class=\"dot {$dot}\">&#9679;</span> " . $height_display
         <meta property="og:image:height" content="630">
         <meta name="twitter:card" content="summary_large_image">
         <meta name="twitter:image" content="https://cypherfaucet.com/assets/images/og-banner.png">
-        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=15">
+        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=16">
         <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
     </head>
     <body>
@@ -549,6 +553,9 @@ $height_display = "<span class=\"dot {$dot}\">&#9679;</span> " . $height_display
                                     <img src="<?php echo $coin_icon; ?>" alt="<?php echo $net_label; ?>" />
                                 </span>
                             </div>
+<?php if ($wallet_url !== '') { ?>
+                            <span style="display: block; margin-top: 8px; font-size: 0.9em;">No <?php echo $net_label; ?> address yet? Generate one at <a href="<?php echo htmlspecialchars($wallet_url, ENT_QUOTES, 'UTF-8'); ?>" target="_blank" rel="noopener" class="site_link">testnetwallet.net</a>.</span>
+<?php } ?>
                             <span style="display: inline-block; margin-top: 8px; font-size: 0.9em;">IP addresses are logged only to prevent faucet abuse.</span>
                             <div class="cf-turnstile" style="margin-top: 12px; margin-bottom: 12px;" data-sitekey="<?php echo TURNSTILE_SITEKEY; ?>" data-theme="auto"></div>
                             <input type="submit" id="send" name="claim" class="formbtn" value="Send <?php echo $currency; ?>" />

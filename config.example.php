@@ -51,6 +51,11 @@ return [
     // on the homepage ("Want to mine testnet coins too? Try our testnet pool").
     'pool_url' => '', // e.g. 'https://testnetpool.com'
 
+    // Optional companion testnet wallet (client-side). When set, a cross-link
+    // shows on the homepage and a "get an address" hint on the Bitcoin and
+    // Litecoin faucets. The wallet supports BTC and LTC (not Monero yet).
+    'wallet_url' => '', // e.g. 'https://testnetwallet.net'
+
     // Optional per-faucet node-status dashboard URLs. When set, the "Network:"
     // line on that faucet links to it. Keys match the faucet identifiers.
     'status_stagenet' => '', // e.g. '/status/xmr-stagenet'

@@ -94,15 +94,15 @@ if ($node !== '') {
         <title>CypherFaucet | Node Status</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="icon" href="/assets/images/favicon.png" type="image/png" />
-        <link rel="shortcut icon" href="/assets/images/favicon.png" type="image/png" />
+        <link rel="icon" href="/assets/images/favicon.png?v=2" type="image/png" />
+        <link rel="shortcut icon" href="/assets/images/favicon.png?v=2" type="image/png" />
         <meta name="description" content="Live status of the nodes powering the CypherFaucet testnet faucets.">
         <meta name="robots" content="index, follow">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="theme-color" content="#14161b" media="(prefers-color-scheme: dark)">
         <meta name="theme-color" content="#f7f7f7" media="(prefers-color-scheme: light)">
         <link rel="canonical" href="https://cypherfaucet.com/status" />
-        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=15">
+        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=16">
     </head>
     <body>
         <?php include __DIR__ . '/../nav.php'; ?>
@@ -119,8 +119,8 @@ if ($node !== '') {
                 <div style="display: flex; align-items: center; margin-top: 10px;">
                     <img src="<?php echo htmlspecialchars($n['icon'], ENT_QUOTES, 'UTF-8'); ?>" width="32px" style="margin-right: 8px;" alt="<?php echo htmlspecialchars($n['currency'], ENT_QUOTES, 'UTF-8'); ?>">
                     <div>
-                        <a href="/status/<?php echo htmlspecialchars($slug, ENT_QUOTES, 'UTF-8'); ?>" style="text-decoration: none; font-size: 18px;"><?php echo htmlspecialchars($n['label'], ENT_QUOTES, 'UTF-8'); ?> Node</a><br>
-                        <small style="font-size: 15px;"><?php echo htmlspecialchars($n['currency'], ENT_QUOTES, 'UTF-8'); ?></small>
+                        <a href="/status/<?php echo htmlspecialchars($slug, ENT_QUOTES, 'UTF-8'); ?>" style="text-decoration: none; font-size: 18px;"><?php echo htmlspecialchars($n['label'], ENT_QUOTES, 'UTF-8'); ?> Node</a>
+                        <span class="badge" style="margin-left: 7px; vertical-align: middle; font-size: 13px;"><?php echo htmlspecialchars($n['currency'], ENT_QUOTES, 'UTF-8'); ?></span>
                     </div>
                 </div>
 <?php } ?>
