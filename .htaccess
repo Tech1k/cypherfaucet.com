@@ -25,10 +25,14 @@ ErrorDocument 503 /503.php
 
 # Hide sensitive files and dirs from the web. Return 404 (not 403) so their
 # existence isn't even confirmed. Covers dotfiles (.git, .gitignore, .ht*, the
-# balance/height caches), the database directory, and the repo metadata files.
+# balance/height caches), the database directory, the repo metadata files, and
+# the internal PHP includes (the shared catalog plus the nav/footer partials),
+# which are require'd from disk and are never meant to be fetched directly.
+# NOTE: 404.php and 503.php are intentionally NOT listed; they are the
+# ErrorDocument targets, so hiding them would break the error pages.
 RewriteRule (^|/)\.(?!well-known/) - [L,R=404]
 RewriteRule ^(db|tools)(/|$) - [L,R=404]
-RewriteRule ^(config\.php|config\.example\.php|LICENSE|README\.md|SECURITY\.md)$ - [L,R=404]
+RewriteRule ^(config\.php|config\.example\.php|LICENSE|README\.md|SECURITY\.md|faucets\.php|nav\.php|footer\.php)$ - [L,R=404]
 
 # Both Monero faucets are served by the single xmr-faucet.php, selected by ?net=.
 # Internal rewrites (no R flag) so the pretty URLs stay in the address bar.
