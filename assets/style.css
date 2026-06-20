@@ -67,6 +67,9 @@
 
 body {
     margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
     font-family: var(--font);
     background: var(--bg);
     color: var(--text);
@@ -88,8 +91,15 @@ code, pre, .mono { font-family: var(--mono); }
 #main {
     width: 90%;
     max-width: var(--maxw);
-    margin: 24px auto 64px;
+    align-self: center;
+    margin: 24px 0 0;
+    flex: 1 0 auto;
 }
+
+/* Short pages (e.g. the homepage): pin the footer to the bottom of the viewport
+   via flexbox instead of padding it down with empty <br> tags. */
+#main.filled { display: flex; flex-direction: column; }
+#main.filled footer { margin-top: auto; }
 
 /* ---- Nav (frosted, sticky, full-bleed; content capped to --maxw) ------- */
 .navbar {
@@ -117,7 +127,6 @@ code, pre, .mono { font-family: var(--mono); }
 .brand { display: inline-flex; align-items: center; text-decoration: none; }
 .brand:hover { text-decoration: none; }
 .brand-name { font-size: 21px; font-weight: 700; color: var(--text); letter-spacing: 0.2px; }
-.brand-name b { color: var(--accent); font-weight: 700; }
 
 .nav-links {
     display: flex;
@@ -284,7 +293,7 @@ code, pre, .mono { font-family: var(--mono); }
 .qr img { display: block; width: 180px; max-width: 100%; height: auto; }
 
 /* ---- Footer ------------------------------------------------------------ */
-footer { margin-top: 40px; }
+footer { margin-top: 40px; padding-bottom: 28px; }
 footer hr { border: none; border-top: 1px solid var(--border); margin: 0 auto; }
 footer p { color: var(--muted); }
 footer a, footer a:visited { color: var(--accent); }

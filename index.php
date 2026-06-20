@@ -46,14 +46,14 @@ $wallet_url = $cfg['wallet_url'] ?? '';
         <meta property="og:title" content="CypherFaucet">
         <meta property="og:site_name" content="CypherFaucet">
         <meta property="og:url" content="https://cypherfaucet.com">
-        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=18">
+        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=20">
     </head>
     <body>
 <?php $nav_current = 'home'; include __DIR__ . '/nav.php'; ?>
 
         <br/><br/><br/>
 
-        <div id="main">
+        <div id="main" class="filled">
             <p align="center">
                 <img src="/assets/images/cypherfaucet-icon.png?v=3" height="128px" alt="CypherFaucet Icon">
                 <br/>
@@ -86,7 +86,6 @@ $wallet_url = $cfg['wallet_url'] ?? '';
 <?php if ($has_donations) { ?>
             <p align="center" style="margin-top: <?php echo ($wallet_url !== '' || $pool_url !== '') ? '8' : '28'; ?>px;"><a href="/donate" class="site_link">Support the faucet</a></p>
 <?php } ?>
-            <br/><br/><br/><br/><br/>
 <?php include __DIR__ . '/footer.php'; ?>
         </div>
     </body>

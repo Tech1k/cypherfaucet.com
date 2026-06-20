@@ -17,7 +17,7 @@ $nav_id = fn($page) => $page === $nav_current ? ' id="curpage"' : '';
 ?>
         <nav class="navbar">
             <a href="/" class="brand">
-                <span class="brand-name">Cypher<b>Faucet</b></span>
+                <span class="brand-name">CypherFaucet</span>
             </a>
 
             <input type="checkbox" class="menu-toggle" id="menu-toggle" />
