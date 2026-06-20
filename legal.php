@@ -9,8 +9,8 @@ $source_url = $cfg['source_url'] ?? 'https://github.com/Tech1k/cypherfaucet';
         <title>CypherFaucet | Legal</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="icon" href="/assets/images/favicon.png?v=2" type="image/png" />
-        <link rel="shortcut icon" href="/assets/images/favicon.png?v=2" type="image/png" />
+        <link rel="icon" href="/assets/images/favicon.png?v=3" type="image/png" />
+        <link rel="shortcut icon" href="/assets/images/favicon.png?v=3" type="image/png" />
         <meta name="description" content="CypherFaucet Terms and Privacy Policy.">
         <meta name="robots" content="index, follow">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -26,7 +26,7 @@ $source_url = $cfg['source_url'] ?? 'https://github.com/Tech1k/cypherfaucet';
         <meta property="og:title" content="CypherFaucet | Legal">
         <meta property="og:site_name" content="CypherFaucet">
         <meta property="og:url" content="https://cypherfaucet.com/legal">
-        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=16">
+        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=18">
     </head>
     <body>
 <?php $nav_current = 'legal'; include __DIR__ . '/nav.php'; ?>

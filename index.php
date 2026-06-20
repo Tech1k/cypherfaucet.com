@@ -29,8 +29,8 @@ $wallet_url = $cfg['wallet_url'] ?? '';
         <title>CypherFaucet | Monero, Litecoin &amp; Bitcoin Testnet Faucets</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="icon" href="/assets/images/favicon.png?v=2" type="image/png" />
-        <link rel="shortcut icon" href="/assets/images/favicon.png?v=2" type="image/png" />
+        <link rel="icon" href="/assets/images/favicon.png?v=3" type="image/png" />
+        <link rel="shortcut icon" href="/assets/images/favicon.png?v=3" type="image/png" />
         <meta name="description" content="Free Monero, Litecoin, and Bitcoin testnet coins for developers testing applications.">
         <meta name="robots" content="index, follow">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -46,7 +46,7 @@ $wallet_url = $cfg['wallet_url'] ?? '';
         <meta property="og:title" content="CypherFaucet">
         <meta property="og:site_name" content="CypherFaucet">
         <meta property="og:url" content="https://cypherfaucet.com">
-        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=16">
+        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=18">
     </head>
     <body>
 <?php $nav_current = 'home'; include __DIR__ . '/nav.php'; ?>
@@ -55,7 +55,7 @@ $wallet_url = $cfg['wallet_url'] ?? '';
 
         <div id="main">
             <p align="center">
-                <img src="/assets/images/cypherfaucet-icon.png?v=2" height="128px" alt="CypherFaucet Icon">
+                <img src="/assets/images/cypherfaucet-icon.png?v=3" height="128px" alt="CypherFaucet Icon">
                 <br/>
                 <span style="font-size: 48px;"><strong>CypherFaucet</strong></span>
                 <br/>

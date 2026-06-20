@@ -17,7 +17,6 @@ $nav_id = fn($page) => $page === $nav_current ? ' id="curpage"' : '';
 ?>
         <nav class="navbar">
             <a href="/" class="brand">
-                <img class="brand-icon" src="/assets/images/cypherfaucet-icon.png?v=2" alt="" width="32" height="32">
                 <span class="brand-name">Cypher<b>Faucet</b></span>
             </a>
 

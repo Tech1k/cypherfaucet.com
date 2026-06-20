@@ -113,10 +113,9 @@ code, pre, .mono { font-family: var(--mono); }
 .navbar a { text-decoration: none; font-weight: 600; }
 .navbar img { max-height: 38px; display: block; }
 
-/* Brand lockup: icon + live "CypherFaucet" wordmark (replaces the baked banner) */
-.brand { display: inline-flex; align-items: center; gap: 9px; text-decoration: none; }
+/* Brand wordmark: live "CypherFaucet" text in the nav (replaces the baked banner) */
+.brand { display: inline-flex; align-items: center; text-decoration: none; }
 .brand:hover { text-decoration: none; }
-.brand-icon { width: 32px; height: 32px; }
 .brand-name { font-size: 21px; font-weight: 700; color: var(--text); letter-spacing: 0.2px; }
 .brand-name b { color: var(--accent); font-weight: 700; }
 

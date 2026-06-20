@@ -94,15 +94,15 @@ if ($node !== '') {
         <title>CypherFaucet | Node Status</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="icon" href="/assets/images/favicon.png?v=2" type="image/png" />
-        <link rel="shortcut icon" href="/assets/images/favicon.png?v=2" type="image/png" />
+        <link rel="icon" href="/assets/images/favicon.png?v=3" type="image/png" />
+        <link rel="shortcut icon" href="/assets/images/favicon.png?v=3" type="image/png" />
         <meta name="description" content="Live status of the nodes powering the CypherFaucet testnet faucets.">
         <meta name="robots" content="index, follow">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="theme-color" content="#14161b" media="(prefers-color-scheme: dark)">
         <meta name="theme-color" content="#f7f7f7" media="(prefers-color-scheme: light)">
         <link rel="canonical" href="https://cypherfaucet.com/status" />
-        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=16">
+        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=18">
     </head>
     <body>
         <?php include __DIR__ . '/../nav.php'; ?>
