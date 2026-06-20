@@ -168,23 +168,27 @@ function get_wallet_balance(string $url, string $user, string $pass, string $net
     // Cache next to the DB (ideally outside the webroot) rather than in the
     // shared, world-readable system temp dir, so other tenants on shared
     // hosting can't read/spoof it. Returns total + unlocked (spendable) XMR.
+    // The live refresh uses a short timeout and serves the last cached value if
+    // the wallet RPC is slow, so a busy wallet never hangs the page render.
     $cacheFile = rtrim($cacheDir, '/') . "/.balance_cache_{$nettype}.json";
-    if (is_readable($cacheFile)) {
-        $cached = json_decode((string) @file_get_contents($cacheFile), true);
-        if (isset($cached['ts'], $cached['total'], $cached['unlocked']) && (time() - (int) $cached['ts']) < $ttl) {
-            return ['total' => (float) $cached['total'], 'unlocked' => (float) $cached['unlocked']];
-        }
+    $cached = is_readable($cacheFile) ? json_decode((string) @file_get_contents($cacheFile), true) : null;
+    if (isset($cached['ts'], $cached['total'], $cached['unlocked']) && (time() - (int) $cached['ts']) < $ttl) {
+        return ['total' => (float) $cached['total'], 'unlocked' => (float) $cached['unlocked']];
     }
-    $resp = xmr_rpc($url, 'get_balance', [], $user, $pass);
-    if ($resp === null || !isset($resp['result']['balance'])) {
-        return null;
+    $resp = xmr_rpc($url, 'get_balance', [], $user, $pass, 4);
+    if ($resp !== null && isset($resp['result']['balance'])) {
+        $bal = [
+            'total'    => $resp['result']['balance'] / 1e12,
+            'unlocked' => ($resp['result']['unlocked_balance'] ?? 0) / 1e12,
+        ];
+        @file_put_contents($cacheFile, json_encode(['ts' => time()] + $bal), LOCK_EX);
+        return $bal;
     }
-    $bal = [
-        'total'    => $resp['result']['balance'] / 1e12,
-        'unlocked' => ($resp['result']['unlocked_balance'] ?? 0) / 1e12,
-    ];
-    @file_put_contents($cacheFile, json_encode(['ts' => time()] + $bal), LOCK_EX);
-    return $bal;
+    // Refresh slow/failed: serve the last-known balance instead of hanging.
+    if (isset($cached['total'], $cached['unlocked'])) {
+        return ['total' => (float) $cached['total'], 'unlocked' => (float) $cached['unlocked']];
+    }
+    return null;
 }
 
 /**
@@ -195,22 +199,21 @@ function get_wallet_balance(string $url, string $user, string $pass, string $net
 function get_node_status(string $walletUrl, ?string $daemonUrl, string $user, string $pass, string $cacheDir, int $ttl = 20): ?array
 {
     $cacheFile = rtrim($cacheDir, '/') . "/.height_cache_" . md5($walletUrl) . ".json";
-    if (is_readable($cacheFile)) {
-        $cached = json_decode((string) @file_get_contents($cacheFile), true);
-        if (isset($cached['ts']) && (time() - (int) $cached['ts']) < $ttl) {
-            return $cached['status'];
-        }
+    $cached = is_readable($cacheFile) ? json_decode((string) @file_get_contents($cacheFile), true) : null;
+    if (isset($cached['ts'], $cached['status']) && (time() - (int) $cached['ts']) < $ttl) {
+        return $cached['status'];
     }
 
-    $wallet = xmr_rpc($walletUrl, 'get_height', [], $user, $pass);
+    $wallet = xmr_rpc($walletUrl, 'get_height', [], $user, $pass, 4);
     if ($wallet === null || !isset($wallet['result']['height'])) {
-        return null;
+        // Refresh slow/failed: serve the last-known status instead of hanging.
+        return $cached['status'] ?? null;
     }
     $status = ['height' => (int) $wallet['result']['height'], 'target' => null, 'synced' => null];
 
     if ($daemonUrl !== null) {
         // Daemon get_info is unauthenticated on the restricted RPC port.
-        $info = xmr_rpc($daemonUrl, 'get_info', [], '', '');
+        $info = xmr_rpc($daemonUrl, 'get_info', [], '', '', 4);
         if ($info !== null && isset($info['result']['height'])) {
             $status['target'] = (int) $info['result']['height'];
             // Allow a 1-block lag (the wallet scans just behind the tip).
@@ -226,7 +229,7 @@ function get_node_status(string $walletUrl, ?string $daemonUrl, string $user, st
  * Call the wallet JSON-RPC. Returns the decoded array, or null on transport
  * error so the caller can fall back to the generic error message.
  */
-function xmr_rpc(string $url, string $method, array $params, string $user, string $pass): ?array
+function xmr_rpc(string $url, string $method, array $params, string $user, string $pass, int $timeout = 30): ?array
 {
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
@@ -239,7 +242,8 @@ function xmr_rpc(string $url, string $method, array $params, string $user, strin
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
     curl_setopt($ch, CURLOPT_USERPWD, "$user:$pass");
-    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 3);
+    curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
     $out = curl_exec($ch);
     $failed = curl_errno($ch);
     curl_close($ch);

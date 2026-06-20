@@ -149,7 +149,7 @@ function verify_captcha(string $response, string $ip, ?string $expectedHost = nu
  * and/or 'error'), or null on transport error so the caller can fall back to
  * the generic error message.
  */
-function core_rpc(string $url, string $user, string $pass, string $method, array $params = []): ?array
+function core_rpc(string $url, string $user, string $pass, string $method, array $params = [], int $timeout = 30): ?array
 {
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_POST, true);
@@ -159,7 +159,8 @@ function core_rpc(string $url, string $user, string $pass, string $method, array
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
     curl_setopt($ch, CURLOPT_USERPWD, "$user:$pass");
-    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 3);
+    curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
     $out = curl_exec($ch);
     $failed = curl_errno($ch);
     curl_close($ch);
@@ -171,48 +172,50 @@ function core_rpc(string $url, string $user, string $pass, string $method, array
 
 /**
  * Spendable wallet balance, cached briefly so ordinary page views (and
- * crawlers) don't each hit the daemon. Null if the daemon can't be reached.
+ * crawlers) don't each hit the daemon. The live refresh uses a short timeout,
+ * and if it's slow or fails we serve the last cached value rather than blocking
+ * the render (a busy wallet RPC must never hang the page). Null only if no value
+ * has ever been cached.
  */
 function get_core_balance(string $url, string $user, string $pass, string $coin, string $cacheDir, int $ttl = 20): ?float
 {
     $cacheFile = rtrim($cacheDir, '/') . "/.balance_cache_{$coin}.json";
-    if (is_readable($cacheFile)) {
-        $cached = json_decode((string) @file_get_contents($cacheFile), true);
-        if (isset($cached['ts'], $cached['balance']) && (time() - (int) $cached['ts']) < $ttl) {
-            return (float) $cached['balance'];
-        }
+    $cached = is_readable($cacheFile) ? json_decode((string) @file_get_contents($cacheFile), true) : null;
+    if (isset($cached['ts'], $cached['balance']) && (time() - (int) $cached['ts']) < $ttl) {
+        return (float) $cached['balance'];
     }
-    $r = core_rpc($url, $user, $pass, 'getbalance');
-    if ($r === null || !isset($r['result'])) {
-        return null;
+    $r = core_rpc($url, $user, $pass, 'getbalance', [], 4);
+    if ($r !== null && isset($r['result'])) {
+        $bal = (float) $r['result'];
+        @file_put_contents($cacheFile, json_encode(['ts' => time(), 'balance' => $bal]), LOCK_EX);
+        return $bal;
     }
-    $bal = (float) $r['result'];
-    @file_put_contents($cacheFile, json_encode(['ts' => time(), 'balance' => $bal]), LOCK_EX);
-    return $bal;
+    // Refresh slow/failed: serve the last-known value instead of hanging.
+    return isset($cached['balance']) ? (float) $cached['balance'] : null;
 }
 
-/** Sync status (height + synced flag) for the liveness line, cached briefly. */
+/** Sync status (height + synced flag) for the liveness line, cached briefly.
+ *  Short refresh timeout; serves the last cached status if the node is slow. */
 function get_core_status(string $url, string $user, string $pass, string $coin, string $cacheDir, int $ttl = 20): ?array
 {
     $cacheFile = rtrim($cacheDir, '/') . "/.height_cache_{$coin}.json";
-    if (is_readable($cacheFile)) {
-        $cached = json_decode((string) @file_get_contents($cacheFile), true);
-        if (isset($cached['ts']) && (time() - (int) $cached['ts']) < $ttl) {
-            return $cached['status'];
-        }
+    $cached = is_readable($cacheFile) ? json_decode((string) @file_get_contents($cacheFile), true) : null;
+    if (isset($cached['ts'], $cached['status']) && (time() - (int) $cached['ts']) < $ttl) {
+        return $cached['status'];
     }
-    $r = core_rpc($url, $user, $pass, 'getblockchaininfo');
-    if ($r === null || !isset($r['result']['blocks'])) {
-        return null;
+    $r = core_rpc($url, $user, $pass, 'getblockchaininfo', [], 4);
+    if ($r !== null && isset($r['result']['blocks'])) {
+        $res = $r['result'];
+        $status = [
+            'height' => (int) $res['blocks'],
+            'synced' => empty($res['initialblockdownload'])
+                && (int) $res['blocks'] >= (int) ($res['headers'] ?? $res['blocks']),
+        ];
+        @file_put_contents($cacheFile, json_encode(['ts' => time(), 'status' => $status]), LOCK_EX);
+        return $status;
     }
-    $res = $r['result'];
-    $status = [
-        'height' => (int) $res['blocks'],
-        'synced' => empty($res['initialblockdownload'])
-            && (int) $res['blocks'] >= (int) ($res['headers'] ?? $res['blocks']),
-    ];
-    @file_put_contents($cacheFile, json_encode(['ts' => time(), 'status' => $status]), LOCK_EX);
-    return $status;
+    // Refresh slow/failed: serve the last-known status instead of hanging.
+    return $cached['status'] ?? null;
 }
 
 function card(string $headerClass, string $bodyClass, string $title, string $bodyHtml): string
