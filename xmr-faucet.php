@@ -516,11 +516,25 @@ if ($bal === null) {
                             if ($tx_proof !== '' || $txkey !== '') {
                                 $body .= "<br/><br/><details style=\"margin-top: 5px;\">"
                                        . "<summary style=\"cursor: pointer;\">Payment proof</summary>"
-                                       . "<p style=\"margin-top: 8px;\">Verify this payment cryptographically. No blockchain explorer required.</p>";
+                                       . "<p style=\"margin-top: 8px;\">Verify this payment yourself:</p>";
+
+                                // On the configured explorer: its "Prove Sending" page verifies a
+                                // payment from the txid, the recipient address, and the transaction's
+                                // PRIVATE KEY (not the signature). Surface that key, clearly labelled,
+                                // so it's actually usable there. Testnet amounts are public, so a
+                                // per-tx key is harmless to reveal. Shown only when an explorer is set;
+                                // the prove URL is derived from explorer_tx (.../tx/ -> .../prove).
+                                if ($explorer_tx !== '' && $txkey !== '') {
+                                    $txkey_safe = htmlspecialchars($txkey, ENT_QUOTES, 'UTF-8');
+                                    $prove_url  = htmlspecialchars(preg_replace('#/tx/?$#', '', $explorer_tx) . '/prove', ENT_QUOTES, 'UTF-8');
+                                    $body .= "<p style=\"margin-bottom: 4px;\"><b>On the explorer:</b><br/>Open <a href=\"{$prove_url}\" target=\"_blank\" rel=\"noopener\" class=\"site_link\">Prove Sending</a> and enter:</p>"
+                                           . "<ul style=\"margin-top: 4px;\"><li>Transaction ID (above)</li><li>Recipient address (above)</li><li>Transaction private key (below)</li></ul>"
+                                           . "<p><code class=\"mono\">{$txkey_safe}</code><br/><button type=\"button\" class=\"copybtn\" data-copy=\"{$txkey_safe}\">Copy key</button></p>";
+                                }
 
                                 if ($tx_proof !== '') {
                                     $proof_safe = htmlspecialchars($tx_proof, ENT_QUOTES, 'UTF-8');
-                                    $body .= "<p style=\"margin-bottom: 4px;\"><b>Monero GUI:</b><br/>Advanced &rarr; Prove/Check &rarr; Check Transaction</p>"
+                                    $body .= "<p style=\"margin-bottom: 4px;\"><b>In your wallet</b> (no explorer needed):<br/>Monero GUI: Advanced &rarr; Prove/Check &rarr; Check Transaction</p>"
                                            . "<p style=\"margin-bottom: 0;\">Enter:</p>"
                                            . "<ul style=\"margin-top: 4px;\"><li>Transaction ID (above)</li><li>Recipient address (above)</li><li>Signature (below)</li></ul>"
                                            . "<p><code class=\"mono\">{$proof_safe}</code><br/><button type=\"button\" class=\"copybtn\" data-copy=\"{$proof_safe}\">Copy signature</button></p>";
