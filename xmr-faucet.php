@@ -518,17 +518,17 @@ if ($bal === null) {
                                        . "<summary style=\"cursor: pointer;\">Payment proof</summary>"
                                        . "<p style=\"margin-top: 8px;\">Verify this payment yourself:</p>";
 
-                                // On the configured explorer: its "Prove Sending" page verifies a
-                                // payment from the txid, the recipient address, and the transaction's
-                                // PRIVATE KEY (not the signature). Surface that key, clearly labelled,
-                                // so it's actually usable there. Testnet amounts are public, so a
-                                // per-tx key is harmless to reveal. Shown only when an explorer is set;
-                                // the prove URL is derived from explorer_tx (.../tx/ -> .../prove).
+                                // On the configured explorer, the "Prove Sending" form lives ON the
+                                // transaction page, so we link straight to that tx (the txid is already
+                                // in the URL) and the user only supplies the recipient address and the
+                                // transaction's PRIVATE KEY (not the signature). Surface that key,
+                                // clearly labelled. Testnet amounts are public, so a per-tx key is
+                                // harmless to reveal. Shown only when an explorer is configured.
                                 if ($explorer_tx !== '' && $txkey !== '') {
                                     $txkey_safe = htmlspecialchars($txkey, ENT_QUOTES, 'UTF-8');
-                                    $prove_url  = htmlspecialchars(preg_replace('#/tx/?$#', '', $explorer_tx) . '/prove', ENT_QUOTES, 'UTF-8');
-                                    $body .= "<p style=\"margin-bottom: 4px;\"><b>On the explorer:</b><br/>Open <a href=\"{$prove_url}\" target=\"_blank\" rel=\"noopener\" class=\"site_link\">Prove Sending</a> and enter:</p>"
-                                           . "<ul style=\"margin-top: 4px;\"><li>Transaction ID (above)</li><li>Recipient address (above)</li><li>Transaction private key (below)</li></ul>"
+                                    $tx_url     = htmlspecialchars($explorer_tx, ENT_QUOTES, 'UTF-8') . $txid_safe;
+                                    $body .= "<p style=\"margin-bottom: 4px;\"><b>On the explorer:</b><br/>Open <a href=\"{$tx_url}\" target=\"_blank\" rel=\"noopener\" class=\"site_link\">Prove Sending</a> on the transaction and enter:</p>"
+                                           . "<ul style=\"margin-top: 4px;\"><li>Recipient address (above)</li><li>Transaction private key (below)</li></ul>"
                                            . "<p><code class=\"mono\">{$txkey_safe}</code><br/><button type=\"button\" class=\"copybtn\" data-copy=\"{$txkey_safe}\">Copy key</button></p>"
                                            . "<p style=\"margin-top: 4px; font-size: 0.9em;\">A one-time key for this transaction only, not a wallet key. Sharing it only proves this payment.</p>";
                                 }
