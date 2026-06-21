@@ -260,7 +260,7 @@ code, pre, .mono { font-family: var(--mono); }
     font-family: inherit;
     transition: background-color 0.15s ease, border-color 0.15s ease;
 }
-.copybtn:hover { background: var(--accent-bg); border-color: var(--accent); }
+.copybtn:hover { background: var(--accent-bg); border-color: var(--accent); text-decoration: none; }
 
 /* ---- Status badge + dots (node sync line) ------------------------------ */
 .badge {

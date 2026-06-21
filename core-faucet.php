@@ -149,7 +149,7 @@ function verify_captcha(string $response, string $ip, ?string $expectedHost = nu
  * and/or 'error'), or null on transport error so the caller can fall back to
  * the generic error message.
  */
-function core_rpc(string $url, string $user, string $pass, string $method, array $params = [], int $timeout = 30): ?array
+function core_rpc(string $url, string $user, string $pass, string $method, array $params = [], int $timeout = 30, ?int &$httpCode = null): ?array
 {
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_POST, true);
@@ -163,11 +163,32 @@ function core_rpc(string $url, string $user, string $pass, string $method, array
     curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
     $out = curl_exec($ch);
     $failed = curl_errno($ch);
+    // HTTP status lets a caller tell a work-queue 503 (the node rejected the
+    // request before running it, so it's safe to retry) from an ambiguous
+    // timeout where the call may actually have been processed.
+    $httpCode = (int) curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
     curl_close($ch);
     if ($failed) {
         return null;
     }
     return json_decode($out, true);
+}
+
+/**
+ * Call an idempotent (read-only) RPC method with a few quick retries. When the
+ * node's RPC work queue is full it returns HTTP 503 instantly; a short backoff
+ * lets the queue drain so a transient flood doesn't fail an otherwise valid
+ * claim. NEVER use this for sendtoaddress: retrying a send could double-pay.
+ */
+function core_rpc_read(string $url, string $user, string $pass, string $method, array $params = [], int $timeout = 10, int $tries = 3): ?array
+{
+    for ($i = 0; ; $i++) {
+        $r = core_rpc($url, $user, $pass, $method, $params, $timeout);
+        if ($r !== null || $i >= $tries - 1) {
+            return $r;
+        }
+        usleep(250000 * ($i + 1)); // 0.25s, then 0.5s, before retrying
+    }
 }
 
 /**
@@ -305,7 +326,8 @@ if ($balance === null) {
                 "<p>That's the faucet's donation address. Please enter your own {$net_label} address.</p>");
         } else {
             // ---- Validate address (a testnet daemon reports mainnet as invalid) -
-            $validation = core_rpc($rpcUrl, $rpcUser, $rpcPass, 'validateaddress', [$address]);
+            // Retries a transient work-queue 503 so a busy node doesn't fail the claim.
+            $validation = core_rpc_read($rpcUrl, $rpcUser, $rpcPass, 'validateaddress', [$address]);
 
             if ($validation === null) {
                 // Daemon unreachable, not the user's fault.
@@ -378,7 +400,8 @@ if ($balance === null) {
                     // Pass the amount as a fixed-decimal string to avoid float /
                     // scientific-notation issues (Bitcoin Core accepts strings).
                     $amountStr = number_format($payout_amount, 8, '.', '');
-                    $transfer = core_rpc($rpcUrl, $rpcUser, $rpcPass, 'sendtoaddress', [$address, $amountStr]);
+                    $sendHttp  = null;
+                    $transfer  = core_rpc($rpcUrl, $rpcUser, $rpcPass, 'sendtoaddress', [$address, $amountStr], 30, $sendHttp);
 
                     if ($transfer !== null && !empty($transfer['result'])) {
                         $txid = $transfer['result'];
@@ -412,9 +435,22 @@ if ($balance === null) {
                             $body .= "<code class=\"mono\">{$txid_safe}</code>";
                         }
                         $active_err = card('success', ' successborder', 'Transaction Status', $body);
+                    } elseif ($transfer === null && $sendHttp === 503) {
+                        // Node's RPC work queue was full: the request was rejected
+                        // BEFORE the wallet ran it, so no coins moved. Release the
+                        // slot so the user can retry the moment the node catches up.
+                        try {
+                            $db->prepare("DELETE FROM {$table} WHERE id = :id")->execute([':id' => $reservationId]);
+                        } catch (PDOException $e) {
+                            error_log("[core-faucet] reservation cleanup failed for {$reservationId}: " . $e->getMessage());
+                        }
+                        error_log("[core-faucet] send deferred: node RPC queue full (503); reservation {$reservationId} released");
+                        $active_err = card('alert', ' alertborder', 'Node Busy',
+                            "<p>The {$net_label} node is busy right now, so your claim couldn't be processed. <b>No coins were sent.</b> Please try again in a moment.</p>");
                     } elseif ($transfer === null) {
-                        // AMBIGUOUS: no RPC response. Keep the reservation so a
-                        // retry can't double-pay.
+                        // AMBIGUOUS: got a connection but no usable response (a timeout
+                        // or dropped reply). The send may have gone through, so keep the
+                        // reservation to make sure a retry can't double-pay.
                         error_log("[core-faucet] send ambiguous (no RPC response); reservation {$reservationId} kept");
                         $active_err = $error_msg;
                     } else {
@@ -516,7 +552,7 @@ $height_display = "<span class=\"dot {$dot}\">&#9679;</span> " . $height_display
         <meta property="og:image:height" content="630">
         <meta name="twitter:card" content="summary_large_image">
         <meta name="twitter:image" content="https://cypherfaucet.com/assets/images/og-banner.png">
-        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=20">
+        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=21">
         <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
     </head>
     <body>

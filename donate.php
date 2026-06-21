@@ -9,7 +9,8 @@ $source_url = $config['source_url'] ?? 'https://github.com/Tech1k/cypherfaucet';
 $openalias  = $config['mainnet_openalias'] ?? '';
 
 $coins = [];
-foreach ([['Monero', 'XMR', 'xmr'], ['Litecoin', 'LTC', 'ltc'], ['Bitcoin', 'BTC', 'btc']] as [$name, $ticker, $key]) {
+// Fourth tuple value is the payment-URI scheme for the "Open in wallet" link.
+foreach ([['Monero', 'XMR', 'xmr', 'monero'], ['Litecoin', 'LTC', 'ltc', 'litecoin'], ['Bitcoin', 'BTC', 'btc', 'bitcoin']] as [$name, $ticker, $key, $scheme]) {
     $addr = $config["mainnet_{$key}"] ?? '';
     if ($addr === '') {
         continue;
@@ -19,6 +20,7 @@ foreach ([['Monero', 'XMR', 'xmr'], ['Litecoin', 'LTC', 'ltc'], ['Bitcoin', 'BTC
         'ticker' => $ticker,
         'addr'   => $addr,
         'qr'     => $config["mainnet_{$key}_qr"] ?? '',
+        'scheme' => $scheme,
     ];
 }
 
@@ -45,7 +47,7 @@ $openalias_safe = htmlspecialchars($openalias, ENT_QUOTES, 'UTF-8');
         <meta name="theme-color" content="#14161b" media="(prefers-color-scheme: dark)">
         <meta name="theme-color" content="#f7f7f7" media="(prefers-color-scheme: light)">
         <link rel="canonical" href="https://cypherfaucet.com/donate" />
-        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=20">
+        <link rel="stylesheet" type="text/css" href="/assets/style.css?v=21">
     </head>
     <body>
 <?php $nav_current = 'donate'; include __DIR__ . '/nav.php'; ?>
@@ -74,7 +76,7 @@ $openalias_safe = htmlspecialchars($openalias, ENT_QUOTES, 'UTF-8');
             <div class="card">
                 <div class="card-header"><b><?php echo $coin['name']; ?> (<?php echo $coin['ticker']; ?>)</b></div>
                 <div class="card-body">
-                    <p><code class="mono"><?php echo $addr_safe; ?></code> <button type="button" class="copybtn" data-copy="<?php echo $addr_safe; ?>">Copy</button></p>
+                    <p><code class="mono"><?php echo $addr_safe; ?></code> <button type="button" class="copybtn" data-copy="<?php echo $addr_safe; ?>">Copy</button> <a class="copybtn" href="<?php echo $coin['scheme']; ?>:<?php echo $addr_safe; ?>">Open in wallet</a></p>
 <?php if ($coin['qr'] !== '') { ?>
                     <p><span class="qr"><img src="<?php echo $qr_safe; ?>" alt="<?php echo $coin['name']; ?> donation QR code"></span></p>
 <?php } ?>
