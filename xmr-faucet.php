@@ -529,7 +529,8 @@ if ($bal === null) {
                                     $prove_url  = htmlspecialchars(preg_replace('#/tx/?$#', '', $explorer_tx) . '/prove', ENT_QUOTES, 'UTF-8');
                                     $body .= "<p style=\"margin-bottom: 4px;\"><b>On the explorer:</b><br/>Open <a href=\"{$prove_url}\" target=\"_blank\" rel=\"noopener\" class=\"site_link\">Prove Sending</a> and enter:</p>"
                                            . "<ul style=\"margin-top: 4px;\"><li>Transaction ID (above)</li><li>Recipient address (above)</li><li>Transaction private key (below)</li></ul>"
-                                           . "<p><code class=\"mono\">{$txkey_safe}</code><br/><button type=\"button\" class=\"copybtn\" data-copy=\"{$txkey_safe}\">Copy key</button></p>";
+                                           . "<p><code class=\"mono\">{$txkey_safe}</code><br/><button type=\"button\" class=\"copybtn\" data-copy=\"{$txkey_safe}\">Copy key</button></p>"
+                                           . "<p style=\"margin-top: 4px; font-size: 0.9em;\">A one-time key for this transaction only, not a wallet key. Sharing it only proves this payment.</p>";
                                 }
 
                                 if ($tx_proof !== '') {
