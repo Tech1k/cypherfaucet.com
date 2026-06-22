@@ -272,7 +272,7 @@ keyless **JSON API** for automation (CI, integration tests, tooling).
 ### Prefill links (the human flow)
 
 Link someone to a faucet page with their address in `?address=` and the claim box
-arrives pre-filled — they solve the captcha and click. No integration, just an
+arrives pre-filled, and they solve the captcha and click. No integration, just an
 `<a href>`, on every faucet page:
 
 ```
@@ -280,7 +280,7 @@ https://cypherfaucet.com/ltc-testnet?address=tltc1q...
 https://cypherfaucet.com/xmr-stagenet?address=5...
 ```
 
-The prefill is display-only — captcha, validation, and rate limits still apply on
+The prefill is display-only: captcha, validation, and rate limits still apply on
 submit, and it survives a failed claim (the field keeps what was entered).
 
 ### JSON API
@@ -295,11 +295,11 @@ Enable it in `config.php`:
 'api_ip_daily_cap' => 25,  // per-IP claims per 24h (a CI host funds several wallets)
 ```
 
-- `GET /api/v1/info` — payout, claim window, and (cached) balance per faucet;
+- `GET /api/v1/info`: payout, claim window, and (cached) balance per faucet;
   `?network=<slug>` filters to one. Never hits a node.
-- `POST /api/v1/claim` — body `{"network":"<slug>","address":"<addr>"}`; sends one
+- `POST /api/v1/claim`: body `{"network":"<slug>","address":"<addr>"}`; sends one
   payout and returns the txid (plus the Monero `tx_key` for proof).
-- `GET /api/v1/` — endpoint index.
+- `GET /api/v1/`: endpoint index.
 
 ```sh
 curl -X POST https://cypherfaucet.com/api/v1/claim \
