@@ -80,7 +80,7 @@ function code_block(string $cmd, string $preStyle): string
             <div class="card">
                 <div class="card-header"><b>Prefill links (no integration)</b></div>
                 <div class="card-body">
-                    <p>Just sending a person here, say from a wallet's "get testnet coins" button? Link them to a faucet page with their address in <code class="mono">?address=</code> and the claim box arrives pre-filled, and they solve the captcha and click. No integration, just an <code class="mono">&lt;a href&gt;</code>:</p>
+                    <p>Just sending a user here, say from a wallet's "get testnet coins" button? Link them to a faucet page with their address in <code class="mono">?address=</code> and the claim box arrives pre-filled, and they solve the captcha and click. No integration, just an <code class="mono">&lt;a href&gt;</code>:</p>
                     <p><code class="mono">https://cypherfaucet.com/<?php echo htmlspecialchars($example_slug, ENT_QUOTES, 'UTF-8'); ?>?address=YOUR_ADDRESS</code></p>
                     <p>It works on every faucet page and is display-only, so the captcha, validation, and rate limits all still apply on submit.</p>
                 </div>

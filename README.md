@@ -266,7 +266,7 @@ non-Apache stack reproduce the equivalent rule or keep them outside the web root
 ## Developer API
 
 Two ways to send testnet coins programmatically, both **off by default**: a
-`?address=` **prefill link** for handing a person off (e.g. from a wallet), and a
+`?address=` **prefill link** for sending a user over (e.g. from a wallet), and a
 keyless **JSON API** for automation (CI, integration tests, tooling).
 
 ### Prefill links (the human flow)
