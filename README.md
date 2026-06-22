@@ -316,6 +316,13 @@ per window (shared with the website), a per-**IP** daily budget (so a CI host ca
 fund several wallets without the site's 1/hour/IP limit), and the optional
 faucet-wide cap. Put a Cloudflare WAF rate-limit on `/api/` as the outer layer.
 
+Building something that needs higher limits, bulk testnet coins, or a faucet/API
+integration? [Get in touch](https://cypherfaucet.com/contact).
+
+If you build the faucet into a tool or show it to your users, a credit is
+appreciated but never required: a link to cypherfaucet.com, or "Testnet coins
+via CypherFaucet."
+
 ## License
 
 Copyright (C) 2025-2026 Tech1k

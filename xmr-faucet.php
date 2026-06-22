@@ -757,6 +757,10 @@ $height_display = "<span class=\"dot {$dot}\">&#9679;</span> " . $height_display
                     <p>This can happen for many reasons. Usually, the captcha could fail if you're using a VPN or ad blocker, unsupported or out-of-date browser.</p>
                     <h3>What's the catch?</h3>
                     <p>There is no catch! I created this and my other faucets to give back to the community.</p>
+<?php if (($config['api_enabled'] ?? false) === true) { ?>
+                    <h3>Can I get coins automatically or in bulk?</h3>
+                    <p>Yes. There's a developer <a href="/api" class="site_link">API</a> for requesting coins programmatically. For higher limits, bulk coins, or a faucet/API integration, <a href="/contact" class="site_link">get in touch</a>.</p>
+<?php } ?>
 <?php if ($mainnet_donate !== '') {
     $mainnet_safe   = htmlspecialchars($mainnet_donate, ENT_QUOTES, 'UTF-8');
     $openalias_safe = htmlspecialchars($mainnet_openalias, ENT_QUOTES, 'UTF-8');

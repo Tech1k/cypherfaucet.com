@@ -156,6 +156,14 @@ function code_block(string $cmd, string $preStyle): string
                 </div>
             </div>
 
+            <div class="card">
+                <div class="card-header"><b>Using it in a project?</b></div>
+                <div class="card-body">
+                    <p>The defaults cover most projects. If you need higher limits, bulk testnet coins, or a faucet/API integration, <a href="/contact" class="site_link">get in touch</a>.</p>
+                    <p>If you build the faucet into a tool or show it to your users, a credit is appreciated but never required: a link to cypherfaucet.com, or "Testnet coins via CypherFaucet."</p>
+                </div>
+            </div>
+
             <p style="margin-top: 18px;">Machine-readable index: <a href="/api/v1/" class="site_link">/api/v1/</a> &middot; full reference and source: <a href="<?php echo htmlspecialchars($source_url, ENT_QUOTES, 'UTF-8'); ?>" target="_blank" rel="noopener" class="site_link">the repository</a>.</p>
 
             <br/>
