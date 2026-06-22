@@ -135,9 +135,10 @@ function code_block(string $cmd, string $preStyle): string
                     <table style="border-collapse: collapse; width: 100%; margin-top: 6px;">
                         <tr><th style="<?php echo $td_style; ?>">status</th><th style="<?php echo $td_style; ?>">error</th></tr>
                         <tr><td style="<?php echo $td_style; ?>">400</td><td style="<?php echo $td_style; ?>"><code class="mono">invalid_request</code>, <code class="mono">unknown_network</code>, <code class="mono">invalid_address</code></td></tr>
+                        <tr><td style="<?php echo $td_style; ?>">405</td><td style="<?php echo $td_style; ?>"><code class="mono">method_not_allowed</code> (use POST for <code class="mono">/claim</code>)</td></tr>
                         <tr><td style="<?php echo $td_style; ?>">409</td><td style="<?php echo $td_style; ?>"><code class="mono">faucet_empty</code></td></tr>
                         <tr><td style="<?php echo $td_style; ?>">429</td><td style="<?php echo $td_style; ?>"><code class="mono">rate_limited</code>, <code class="mono">ip_rate_limited</code>, <code class="mono">daily_cap</code></td></tr>
-                        <tr><td style="<?php echo $td_style; ?>">503</td><td style="<?php echo $td_style; ?>"><code class="mono">node_busy</code>, <code class="mono">send_failed</code>, <code class="mono">unavailable</code></td></tr>
+                        <tr><td style="<?php echo $td_style; ?>">503</td><td style="<?php echo $td_style; ?>"><code class="mono">node_busy</code>, <code class="mono">send_failed</code>, <code class="mono">unavailable</code>, <code class="mono">faucet_offline</code></td></tr>
                         <tr><td style="<?php echo $td_style; ?>">500</td><td style="<?php echo $td_style; ?>"><code class="mono">internal_error</code></td></tr>
                     </table>
                     <p style="margin-top: 10px;"><code class="mono">rate_limited</code> includes <code class="mono">retry_after</code> (seconds) and <code class="mono">next_claim</code>, and sets the <code class="mono">Retry-After</code> header.</p>
