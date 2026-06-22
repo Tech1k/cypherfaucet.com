@@ -32,16 +32,39 @@ ErrorDocument 503 /503.php
 # ErrorDocument targets, so hiding them would break the error pages.
 RewriteRule (^|/)\.(?!well-known/) - [L,R=404]
 RewriteRule ^(db|tools)(/|$) - [L,R=404]
-RewriteRule ^(config\.php|config\.example\.php|LICENSE|README\.md|SECURITY\.md|faucets\.php|nav\.php|footer\.php)$ - [L,R=404]
+RewriteRule ^(config\.php|config\.example\.php|LICENSE|README\.md|SECURITY\.md|faucets\.php|faucet_lib\.php|nav\.php|footer\.php)$ - [L,R=404]
 
 # Both Monero faucets are served by the single xmr-faucet.php, selected by ?net=.
-# Internal rewrites (no R flag) so the pretty URLs stay in the address bar.
+# Internal rewrites (no R flag) so the pretty URLs stay in the address bar. An
+# optional ?address= prefill (e.g. a wallet linking a user here with their
+# address filled in) is passed through -- ONLY that param, captured explicitly,
+# so net/coin stays authoritative and nothing else in the query reaches the engine.
+RewriteCond %{QUERY_STRING} (?:^|&)(address=[^&]*)
+RewriteRule ^xmr-stagenet/?$ xmr-faucet.php?net=stagenet&%1 [L]
 RewriteRule ^xmr-stagenet/?$ xmr-faucet.php?net=stagenet [L]
+RewriteCond %{QUERY_STRING} (?:^|&)(address=[^&]*)
+RewriteRule ^xmr-testnet/?$  xmr-faucet.php?net=testnet&%1 [L]
 RewriteRule ^xmr-testnet/?$  xmr-faucet.php?net=testnet  [L]
 
 # Bitcoin Core-family faucets share core-faucet.php, selected by ?coin=.
+RewriteCond %{QUERY_STRING} (?:^|&)(address=[^&]*)
+RewriteRule ^ltc-testnet/?$ core-faucet.php?coin=ltc&%1 [L]
 RewriteRule ^ltc-testnet/?$ core-faucet.php?coin=ltc [L]
+RewriteCond %{QUERY_STRING} (?:^|&)(address=[^&]*)
+RewriteRule ^btc-testnet/?$ core-faucet.php?coin=btc&%1 [L]
 RewriteRule ^btc-testnet/?$ core-faucet.php?coin=btc [L]
+
+# Developer JSON API (api.php), versioned. No QSA on index/claim so a duplicate
+# ?_api= in the query string can't override the action; /info captures ONLY
+# ?network= explicitly, for the same reason.
+RewriteRule ^api/v1/?$       api.php?_api=index [L]
+RewriteCond %{QUERY_STRING} (?:^|&)(network=[^&]*)
+RewriteRule ^api/v1/info/?$  api.php?_api=info&%1 [L]
+RewriteRule ^api/v1/info/?$  api.php?_api=info [L]
+RewriteRule ^api/v1/claim/?$ api.php?_api=claim [L]
+
+# Human-readable API docs page (the /api/v1/* routes above are the machine API).
+RewriteRule ^api/?$ api-docs.php [L]
 
 # Strip .php from direct requests only. The REDIRECT_STATUS guard keeps this
 # from firing on internal error subrequests (e.g. the 404 ErrorDocument), which

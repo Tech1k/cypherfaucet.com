@@ -32,6 +32,9 @@ network chosen by the URL via `.htaccess`:
 - Live wallet/daemon **sync status** and **lifetime** stats (total sent /
   payouts / last payout), kept in a counter table that survives data pruning.
 - IP retention sweep (cron) so claimer IPs are not kept indefinitely.
+- **Developer API** ([api.php](api.php)) and `?address=` **prefill links** for
+  sending users or CI to the faucet, sharing the website's rate limits and claim
+  path. Off by default; see [Developer API](#developer-api).
 
 ## Requirements
 
@@ -259,6 +262,59 @@ uncomment `SHOW_NODE_INFO=false` in `status/index.php` to also hide the node
 version on a public deployment. `status/.htaccess` 404s direct access to
 `dashboard.php` and the cache files; that relies on mod_rewrite, so on a
 non-Apache stack reproduce the equivalent rule or keep them outside the web root.
+
+## Developer API
+
+Two ways to send testnet coins programmatically, both **off by default**: a
+`?address=` **prefill link** for handing a person off (e.g. from a wallet), and a
+keyless **JSON API** for automation (CI, integration tests, tooling).
+
+### Prefill links (the human flow)
+
+Link someone to a faucet page with their address in `?address=` and the claim box
+arrives pre-filled — they solve the captcha and click. No integration, just an
+`<a href>`, on every faucet page:
+
+```
+https://cypherfaucet.com/ltc-testnet?address=tltc1q...
+https://cypherfaucet.com/xmr-stagenet?address=5...
+```
+
+The prefill is display-only — captcha, validation, and rate limits still apply on
+submit, and it survives a failed claim (the field keeps what was entered).
+
+### JSON API
+
+[api.php](api.php) serves a keyless JSON API at `/api/v1/`, sharing the website's
+rate-limit tables and the canonical claim path ([faucet_lib.php](faucet_lib.php)).
+Enable it in `config.php`:
+
+```php
+'api_enabled'      => true,
+'api_daily_cap'    => 0,   // faucet-wide claims per net per 24h (0 = unlimited)
+'api_ip_daily_cap' => 25,  // per-IP claims per 24h (a CI host funds several wallets)
+```
+
+- `GET /api/v1/info` — payout, claim window, and (cached) balance per faucet;
+  `?network=<slug>` filters to one. Never hits a node.
+- `POST /api/v1/claim` — body `{"network":"<slug>","address":"<addr>"}`; sends one
+  payout and returns the txid (plus the Monero `tx_key` for proof).
+- `GET /api/v1/` — endpoint index.
+
+```sh
+curl -X POST https://cypherfaucet.com/api/v1/claim \
+  -H 'Content-Type: application/json' \
+  -d '{"network":"ltc-testnet","address":"tltc1q..."}'
+```
+
+Slugs are the URL slugs (`xmr-stagenet`, `xmr-testnet`, `ltc-testnet`,
+`btc-testnet`). Errors are `{"ok":false,"error":"<code>",...}` with a matching
+HTTP status (`400` invalid, `409` empty, `429` rate-limited, `503` node-busy).
+
+The API has no captcha, so the limits carry the load: one claim per **address**
+per window (shared with the website), a per-**IP** daily budget (so a CI host can
+fund several wallets without the site's 1/hour/IP limit), and the optional
+faucet-wide cap. Put a Cloudflare WAF rate-limit on `/api/` as the outer layer.
 
 ## License
 

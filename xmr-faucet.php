@@ -103,6 +103,14 @@ if (!$faucet_enabled) {
 $display_form = "";
 $active_err   = "";
 
+// Optional address prefill: a ?address= link (e.g. a wallet sending users here)
+// pre-fills the input, and a failed POST keeps what was entered. Display only --
+// the captcha + validation still gate the claim. Escaped and length-capped.
+$address_value = htmlspecialchars(
+    substr(trim(($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' ? ($_POST['address'] ?? '') : ($_GET['address'] ?? '')), 0, 120),
+    ENT_QUOTES, 'UTF-8'
+);
+
 // ---- Helpers ------------------------------------------------------------
 
 /**
@@ -713,7 +721,7 @@ $height_display = "<span class=\"dot {$dot}\">&#9679;</span> " . $height_display
                     <div class="card-body">
                         <form method="post" action="">
                             <div class="forminput-wrapper">
-                                <input class="forminput" id="address" name="address" aria-label="Monero <?php echo $net_label; ?> address" type="text" value="" placeholder="Your Monero <?php echo $net_label; ?> address (<?php echo $address_hint; ?>)" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" required />
+                                <input class="forminput" id="address" name="address" aria-label="Monero <?php echo $net_label; ?> address" type="text" value="<?php echo $address_value; ?>" placeholder="Your Monero <?php echo $net_label; ?> address (<?php echo $address_hint; ?>)" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" required />
                                 <span class="icon-left">
                                     <img src="/assets/images/monero.png" alt="Monero <?php echo $net_label; ?>" />
                                 </span>

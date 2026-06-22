@@ -33,6 +33,9 @@ $nav_id = fn($page) => $page === $nav_current ? ' id="curpage"' : '';
 <?php if ($nav_has_donations) { ?>
                 <a href="/donate"<?php echo $nav_id('donate'); ?>>Donate</a>
 <?php } ?>
+<?php if (($nav_cfg['api_enabled'] ?? false) === true) { ?>
+                <a href="/api"<?php echo $nav_id('api'); ?>>API</a>
+<?php } ?>
                 <a href="/contact"<?php echo $nav_id('contact'); ?>>Contact</a>
                 <a href="/legal"<?php echo $nav_id('legal'); ?>>Legal</a>
             </div>

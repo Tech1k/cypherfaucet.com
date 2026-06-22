@@ -56,6 +56,25 @@ return [
     // Litecoin faucets. The wallet supports BTC and LTC (not Monero yet).
     'wallet_url' => '', // e.g. 'https://testnetwallet.net'
 
+    // ---- Developer API (api.php) ----------------------------------------
+    // Keyless JSON API at /api/v1/ (info + claim). Off by default; set true to
+    // expose it. Claim limits are SHARED with the web faucets (same rate-limit
+    // tables + reservation pattern), so the API can't bypass the per-address/IP
+    // window or double-pay. Put Cloudflare WAF rate-limiting on /api/ too.
+    'api_enabled' => false,
+    // Faucet-wide safety cap: max claims per faucet per rolling 24h via the API
+    // (0 = unlimited). Counts all claims in that faucet's table, so it bounds
+    // worst-case drain and node load even though the API has no captcha. Tune to
+    // your wallet top-up rate.
+    'api_daily_cap' => 0,
+    // Per-IP daily budget for the API (claims per IP per rolling 24h; 0 =
+    // unlimited). The API does NOT copy the website's tight 1-per-hour-per-IP
+    // limit, because a CI run legitimately funds several test wallets from one
+    // host. This generous daily budget supports that while still stopping a
+    // single IP from draining the faucet-wide cap. Only applies behind
+    // Cloudflare (where a real per-visitor IP exists).
+    'api_ip_daily_cap' => 25,
+
     // Optional per-faucet node-status dashboard URLs. When set, the "Network:"
     // line on that faucet links to it. Keys match the faucet identifiers.
     'status_stagenet' => '', // e.g. '/status/xmr-stagenet'
