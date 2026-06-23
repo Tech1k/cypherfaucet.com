@@ -82,6 +82,10 @@ $donate_safe = htmlspecialchars($donate_addr, ENT_QUOTES, 'UTF-8'); // display; 
 // When set, the "Network:" line links to it; blank hides the link.
 $status_url = $config["status_{$nettype}"] ?? '';
 
+// Optional companion testnet wallet (testnetwallet.net). When set, a "get an
+// address" hint shows under the claim input. The wallet supports Monero, Litecoin, and Bitcoin.
+$wallet_url = $config['wallet_url'] ?? '';
+
 // Wallet RPC. Credentials come from config (or leave blank if the wallet runs
 // with --disable-rpc-login bound to localhost).
 $rpcUrl  = "http://127.0.0.1:$rpc_port/json_rpc";
@@ -726,6 +730,9 @@ $height_display = "<span class=\"dot {$dot}\">&#9679;</span> " . $height_display
                                     <img src="/assets/images/monero.png" alt="Monero <?php echo $net_label; ?>" />
                                 </span>
                             </div>
+<?php if ($wallet_url !== '') { ?>
+                            <span style="display: block; margin-top: 8px; font-size: 0.9em;">No Monero <?php echo $net_label; ?> address yet? Generate one at <a href="<?php echo htmlspecialchars($wallet_url, ENT_QUOTES, 'UTF-8'); ?>" target="_blank" rel="noopener" class="site_link">testnetwallet.net</a>.</span>
+<?php } ?>
                             <span style="display: inline-block; margin-top: 8px; font-size: 0.9em;">IP addresses are logged only to prevent faucet abuse.</span>
                             <div class="cf-turnstile" style="margin-top: 12px; margin-bottom: 12px;" data-sitekey="<?php echo TURNSTILE_SITEKEY; ?>" data-theme="auto"></div>
                             <input type="submit" id="send" name="claim" class="formbtn" value="Send <?php echo $currency; ?>" />

@@ -52,8 +52,8 @@ return [
     'pool_url' => '', // e.g. 'https://testnetpool.com'
 
     // Optional companion testnet wallet (client-side). When set, a cross-link
-    // shows on the homepage and a "get an address" hint on the Bitcoin and
-    // Litecoin faucets. The wallet supports BTC and LTC (not Monero yet).
+    // shows on the homepage and a "get an address" hint on every faucet. The
+    // wallet supports Monero, Litecoin, and Bitcoin.
     'wallet_url' => '', // e.g. 'https://testnetwallet.net'
 
     // ---- Developer API (api.php) ----------------------------------------
@@ -74,6 +74,13 @@ return [
     // single IP from draining the faucet-wide cap. Only applies behind
     // Cloudflare (where a real per-visitor IP exists).
     'api_ip_daily_cap' => 25,
+    // Browser origins allowed to call the API from client-side JS (CORS).
+    // Empty = no CORS: server-to-server only (curl, backends), the safe default.
+    // Set your own first-party origin(s), e.g. a companion wallet, to enable an
+    // in-browser one-click claim; the matching origin is echoed back, so other
+    // sites' pages stay blocked by the browser. Use ['*'] to open it to any
+    // origin (only if you want a fully public browser API). String or array.
+    'api_cors_origins' => [], // e.g. ['https://testnetwallet.net']
 
     // Optional per-faucet node-status dashboard URLs. When set, the "Network:"
     // line on that faucet links to it. Keys match the faucet identifiers.

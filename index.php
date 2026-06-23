@@ -78,7 +78,7 @@ $wallet_url = $cfg['wallet_url'] ?? '';
 <?php } ?>
             </div>
 <?php if ($wallet_url !== '') { ?>
-            <p align="center" style="margin-top: 28px;">Need a Bitcoin or Litecoin testnet wallet? Try <a href="<?php echo htmlspecialchars($wallet_url, ENT_QUOTES, 'UTF-8'); ?>" target="_blank" rel="noopener" class="site_link">testnetwallet.net</a>.</p>
+            <p align="center" style="margin-top: 28px;">Need a Monero, Litecoin, or Bitcoin testnet wallet? Try <a href="<?php echo htmlspecialchars($wallet_url, ENT_QUOTES, 'UTF-8'); ?>" target="_blank" rel="noopener" class="site_link">testnetwallet.net</a>.</p>
 <?php } ?>
 <?php if ($pool_url !== '') { ?>
             <p align="center" style="margin-top: <?php echo $wallet_url !== '' ? '8' : '28'; ?>px;">Want to mine testnet coins too? Try our <a href="<?php echo htmlspecialchars($pool_url, ENT_QUOTES, 'UTF-8'); ?>" target="_blank" rel="noopener" class="site_link">testnet pool</a>.</p>

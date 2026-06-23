@@ -22,6 +22,9 @@ require __DIR__ . '/faucet_lib.php';
 
 header('Content-Type: application/json; charset=utf-8');
 header('X-Content-Type-Options: nosniff');
+// Per-request, per-origin, and rate-limited: never cache (a cached CORS response
+// served to the wrong origin would break the per-origin Access-Control-Allow-Origin).
+header('Cache-Control: no-store');
 
 /** Emit a JSON response and stop. */
 function api_out(int $code, array $payload): void
@@ -43,6 +46,37 @@ function api_out(int $code, array $payload): void
 if (($config['api_enabled'] ?? false) !== true) {
     header('Content-Type: text/html; charset=utf-8');
     require __DIR__ . '/404.php';
+    exit;
+}
+
+// CORS for configured first-party browser origins (e.g. a companion wallet's
+// one-click claim). Off unless api_cors_origins is set. The matching Origin is
+// echoed back (so multiple origins work) rather than a blanket *; a disallowed
+// origin gets no header and the browser blocks it, while curl / server-to-server
+// callers send no Origin and are unaffected.
+$cors_origins = $config['api_cors_origins'] ?? [];
+if (is_string($cors_origins)) {
+    $cors_origins = $cors_origins !== '' ? [$cors_origins] : [];
+}
+$cors_origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+$cors_ok = false;
+if (in_array('*', $cors_origins, true)) {
+    header('Access-Control-Allow-Origin: *'); // fully open (no Vary needed)
+    $cors_ok = true;
+} elseif ($cors_origin !== '' && in_array($cors_origin, $cors_origins, true)) {
+    header('Access-Control-Allow-Origin: ' . $cors_origin);
+    header('Vary: Origin');
+    $cors_ok = true;
+}
+// Answer the CORS preflight (a JSON POST to /claim triggers one) before routing,
+// so it returns 204 rather than the claim handler's 405.
+if (($_SERVER['REQUEST_METHOD'] ?? '') === 'OPTIONS') {
+    if ($cors_ok) {
+        header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+        header('Access-Control-Allow-Headers: Content-Type');
+        header('Access-Control-Max-Age: 86400');
+    }
+    http_response_code(204);
     exit;
 }
 

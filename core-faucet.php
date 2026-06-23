@@ -63,7 +63,7 @@ $donate_safe = htmlspecialchars($donate_addr, ENT_QUOTES, 'UTF-8'); // display; 
 $status_url = $config["status_{$coin}"] ?? '';
 
 // Optional companion testnet wallet (testnetwallet.net). When set, a "get an
-// address" hint shows under the claim input. The wallet supports BTC and LTC.
+// address" hint shows under the claim input. The wallet supports Monero, Litecoin, and Bitcoin.
 $wallet_url = $config['wallet_url'] ?? '';
 
 // Optional mainnet "support the faucet" address for this coin (mainnet_ltc /
