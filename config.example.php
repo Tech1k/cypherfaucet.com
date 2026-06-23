@@ -67,12 +67,9 @@ return [
     // worst-case drain and node load even though the API has no captcha. Tune to
     // your wallet top-up rate.
     'api_daily_cap' => 0,
-    // Per-IP daily budget for the API (claims per IP per rolling 24h; 0 =
-    // unlimited). The API does NOT copy the website's tight 1-per-hour-per-IP
-    // limit, because a CI run legitimately funds several test wallets from one
-    // host. This generous daily budget supports that while still stopping a
-    // single IP from draining the faucet-wide cap. Only applies behind
-    // Cloudflare (where a real per-visitor IP exists).
+    // Optional per-IP daily ceiling for the API (claims per IP per rolling 24h;
+    // 0 = unlimited), an extra backstop on top of the per-IP-per-window limit the
+    // API shares with the website. Only applies behind Cloudflare.
     'api_ip_daily_cap' => 25,
     // Browser origins allowed to call the API from client-side JS (CORS).
     // Empty = no CORS: server-to-server only (curl, backends), the safe default.

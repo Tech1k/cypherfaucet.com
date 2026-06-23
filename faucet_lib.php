@@ -263,12 +263,13 @@ function faucet_claim(PDO $db, string $key, array $entry, array $config, string 
         return ['status' => 'error'];
     }
 
-    // ---- Per-address window pre-check (DB read, BEFORE any node RPC) ----
-    // Per ADDRESS only (not per IP), so one host can fund several addresses; the
-    // per-IP budget above governs the IP dimension. The authoritative re-check
-    // runs again under BEGIN IMMEDIATE before the send.
+    // ---- Rate-limit window pre-check (DB read, BEFORE any node RPC) ----
+    // Per address AND (behind Cloudflare) per IP, matching the website: one claim
+    // per IP per window stops a single source bursting many fresh addresses, which
+    // an HD wallet hands out automatically. Re-checked authoritatively under the
+    // BEGIN IMMEDIATE lock below.
     try {
-        $recent = faucet_recent_claim($db, $table, $address, $ip, false, $window);
+        $recent = faucet_recent_claim($db, $table, $address, $ip, $ipTrusted, $window);
     } catch (PDOException $e) {
         error_log("[faucet-api] rate-limit pre-check failed: " . $e->getMessage());
         return ['status' => 'error'];
@@ -328,7 +329,7 @@ function faucet_claim(PDO $db, string $key, array $entry, array $config, string 
         } elseif ($ipTrusted && $ipDailyCap > 0 && faucet_daily_count($db, $table, $ip) >= $ipDailyCap) {
             $capHit = 'ip_rate_limited';
         } else {
-            $recent = faucet_recent_claim($db, $table, $address, $ip, false, $window);
+            $recent = faucet_recent_claim($db, $table, $address, $ip, $ipTrusted, $window);
             if ($recent === null) {
                 $reserve = $db->prepare(
                     "INSERT INTO {$table} (ip_address, payout_amount, payout_address, transaction_id, timestamp)

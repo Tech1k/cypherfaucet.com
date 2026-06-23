@@ -149,8 +149,7 @@ function code_block(string $cmd, string $preStyle): string
                 <div class="card-header"><b>Rate limits &amp; fair use</b></div>
                 <div class="card-body">
                     <ul>
-                        <li>One claim per <b>address</b> per claim window (shared with the website, so claiming on the site and via the API count together).</li>
-                        <li>A daily budget per <b>IP</b>, so a CI host can fund several test wallets in a run. Unlike the website, the API does not cap you to one claim per hour per IP.</li>
+                        <li>One claim per <b>address</b> per claim window, and (behind Cloudflare) one per <b>IP</b> per window, shared with the website. Claiming on the site and via the API count together.</li>
                         <li>A faucet-wide daily cap is the overall ceiling.</li>
                     </ul>
                     <p>These are valueless testnet coins, so please don't hammer or hoard. A <code class="mono">429</code> means wait (respect <code class="mono">Retry-After</code>), not retry-in-a-loop.</p>

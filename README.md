@@ -312,9 +312,9 @@ Slugs are the URL slugs (`xmr-stagenet`, `xmr-testnet`, `ltc-testnet`,
 HTTP status (`400` invalid, `409` empty, `429` rate-limited, `503` node-busy).
 
 The API has no captcha, so the limits carry the load: one claim per **address**
-per window (shared with the website), a per-**IP** daily budget (so a CI host can
-fund several wallets without the site's 1/hour/IP limit), and the optional
-faucet-wide cap. Put a Cloudflare WAF rate-limit on `/api/` as the outer layer.
+and (behind Cloudflare) one per **IP** per window, shared with the website, plus
+the optional faucet-wide daily cap. Put a Cloudflare WAF rate-limit on `/api/` as
+the outer layer.
 
 Building something that needs higher limits, bulk testnet coins, or a faucet/API
 integration? [Get in touch](https://cypherfaucet.com/contact).
