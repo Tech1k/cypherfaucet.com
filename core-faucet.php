@@ -66,6 +66,12 @@ $status_url = $config["status_{$coin}"] ?? '';
 // address" hint shows under the claim input. The wallet supports Monero, Litecoin, and Bitcoin.
 $wallet_url = $config['wallet_url'] ?? '';
 
+// Optional companion swap service (testnetswap.com). When set, a nudge follows
+// a successful claim and a FAQ entry explains it. Swaps are non-custodial and
+// run between testnet coins, so it is the outbound route for coins this faucet
+// just paid out: claim tLTC here, swap it for the tBTC you actually needed.
+$swap_url = $config['swap_url'] ?? '';
+
 // Optional mainnet "support the faucet" address for this coin (mainnet_ltc /
 // mainnet_btc) plus an optional QR, and a shared OpenAlias handle that resolves
 // per coin. Empty by default so the public code asks for nothing; set in
@@ -442,6 +448,16 @@ if ($balance === null) {
                         } else {
                             $body .= "<code class=\"mono\">{$txid_safe}</code>";
                         }
+
+                        // They are holding the coins now, which is the moment the
+                        // swap is actually useful: it turns this payout into the
+                        // testnet coin they came for if this wasn't it.
+                        if ($swap_url !== '') {
+                            $swap_safe = htmlspecialchars($swap_url, ENT_QUOTES, 'UTF-8');
+                            $body .= "<br/><br/><span>Need a different testnet coin? Swap your {$currency} at "
+                                   . "<a href=\"{$swap_safe}\" target=\"_blank\" rel=\"noopener\" class=\"site_link\">testnetswap.com</a>.</span>";
+                        }
+
                         $active_err = card('success', ' successborder', 'Transaction Status', $body);
                     } elseif ($transfer === null && $sendHttp === 503) {
                         // Node's RPC work queue was full: the request was rejected
@@ -632,6 +648,10 @@ $height_display = "<span class=\"dot {$dot}\">&#9679;</span> " . $height_display
                     <p>Sometimes the testnet is slow with propagating transactions and the explorers could be running a bit behind. Give it a few minutes and you should be able to see the coins in your wallet (assuming you entered the correct wallet address) and on the explorer via the txid.</p>
                     <h3>The captcha isn't working. What should I do?</h3>
                     <p>This can happen for many reasons. Usually, the captcha could fail if you're using a VPN or ad blocker, unsupported or out-of-date browser.</p>
+<?php if ($swap_url !== '') { ?>
+                    <h3>Can I swap my <?php echo $currency; ?> for another testnet coin?</h3>
+                    <p>Yes. <a href="<?php echo htmlspecialchars($swap_url, ENT_QUOTES, 'UTF-8'); ?>" target="_blank" rel="noopener" class="site_link">TestnetSwap</a> runs non-custodial atomic swaps between testnet coins, so you hold your own keys the whole way through<?php if ($wallet_url !== '') { ?>, and the same swaps are built into <a href="<?php echo htmlspecialchars($wallet_url, ENT_QUOTES, 'UTF-8'); ?>" target="_blank" rel="noopener" class="site_link">TestnetWallet</a><?php } ?>.</p>
+<?php } ?>
                     <h3>What's the catch?</h3>
                     <p>There is no catch! I created this and my other faucets to give back to the community.</p>
 <?php if (($config['api_enabled'] ?? false) === true) { ?>

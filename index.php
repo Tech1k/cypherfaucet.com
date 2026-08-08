@@ -18,9 +18,20 @@ $has_donations = ($cfg['mainnet_openalias'] ?? '') !== ''
     || ($cfg['mainnet_ltc'] ?? '') !== ''
     || ($cfg['mainnet_btc'] ?? '') !== '';
 
-// Optional cross-link to a companion testnet mining pool (blank hides it).
-$pool_url = $cfg['pool_url'] ?? '';
+// Optional cross-links to the companion testnet sites (blank hides that line).
+// They stack under the faucet cards, so rather than each line hard-coding a
+// margin that assumes which of its neighbours are on, $link_gap() hands the
+// first line shown the wide top margin and every later one the tight gap. Any
+// combination of wallet / swap / pool / donate then spaces itself correctly.
+$pool_url   = $cfg['pool_url'] ?? '';
 $wallet_url = $cfg['wallet_url'] ?? '';
+$swap_url   = $cfg['swap_url'] ?? '';
+$first_link = true;
+$link_gap = function () use (&$first_link) {
+    $gap = $first_link ? 28 : 8;
+    $first_link = false;
+    return $gap;
+};
 ?>
 <!-- SPDX-License-Identifier: AGPL-3.0-or-later  |  Copyright (C) 2025-2026 Tech1k -->
 <!DOCTYPE html>
@@ -78,13 +89,16 @@ $wallet_url = $cfg['wallet_url'] ?? '';
 <?php } ?>
             </div>
 <?php if ($wallet_url !== '') { ?>
-            <p align="center" style="margin-top: 28px;">Need a Monero, Litecoin, or Bitcoin testnet wallet? Try <a href="<?php echo htmlspecialchars($wallet_url, ENT_QUOTES, 'UTF-8'); ?>" target="_blank" rel="noopener" class="site_link">testnetwallet.net</a>.</p>
+            <p align="center" style="margin-top: <?php echo $link_gap(); ?>px;">Need a Monero, Litecoin, or Bitcoin testnet wallet? Try <a href="<?php echo htmlspecialchars($wallet_url, ENT_QUOTES, 'UTF-8'); ?>" target="_blank" rel="noopener" class="site_link">testnetwallet.net</a><?php if ($swap_url !== '') { ?>, now with swaps built in<?php } ?>.</p>
+<?php } ?>
+<?php if ($swap_url !== '') { ?>
+            <p align="center" style="margin-top: <?php echo $link_gap(); ?>px;">Need a different testnet coin? Swap them non-custodially at <a href="<?php echo htmlspecialchars($swap_url, ENT_QUOTES, 'UTF-8'); ?>" target="_blank" rel="noopener" class="site_link">testnetswap.com</a>.</p>
 <?php } ?>
 <?php if ($pool_url !== '') { ?>
-            <p align="center" style="margin-top: <?php echo $wallet_url !== '' ? '8' : '28'; ?>px;">Want to mine testnet coins too? Try our <a href="<?php echo htmlspecialchars($pool_url, ENT_QUOTES, 'UTF-8'); ?>" target="_blank" rel="noopener" class="site_link">testnet pool</a>.</p>
+            <p align="center" style="margin-top: <?php echo $link_gap(); ?>px;">Want to mine testnet coins too? Try our <a href="<?php echo htmlspecialchars($pool_url, ENT_QUOTES, 'UTF-8'); ?>" target="_blank" rel="noopener" class="site_link">testnet pool</a>.</p>
 <?php } ?>
 <?php if ($has_donations) { ?>
-            <p align="center" style="margin-top: <?php echo ($wallet_url !== '' || $pool_url !== '') ? '8' : '28'; ?>px;"><a href="/donate" class="site_link">Support the faucet</a></p>
+            <p align="center" style="margin-top: <?php echo $link_gap(); ?>px;"><a href="/donate" class="site_link">Support the faucet</a></p>
 <?php } ?>
 <?php include __DIR__ . '/footer.php'; ?>
         </div>

@@ -56,6 +56,13 @@ return [
     // wallet supports Monero, Litecoin, and Bitcoin.
     'wallet_url' => '', // e.g. 'https://testnetwallet.net'
 
+    // Optional companion swap service (non-custodial atomic swaps between
+    // testnet coins). When set, a cross-link shows on the homepage, a "swap
+    // these" nudge follows a successful claim, and a FAQ entry explains it on
+    // every faucet. With wallet_url set too, the copy also notes that the same
+    // swaps are built into the wallet.
+    'swap_url' => '', // e.g. 'https://testnetswap.com'
+
     // ---- Developer API (api.php) ----------------------------------------
     // Keyless JSON API at /api/v1/ (info + claim). Off by default; set true to
     // expose it. Claim limits are SHARED with the web faucets (same rate-limit
